@@ -38,18 +38,17 @@ html, body {
   background-repeat: no-repeat;
   z-index: 0;
 }
-/* Bottom gradient — darkens lower portion so chat is readable,
-   face (upper ~40%) stays fully visible */
+/* Bottom gradient — covers lower 60%, face in upper 40% stays clean */
 #bgPhoto::after {
   content: '';
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  height: 62%;
+  height: 60%;
   background: linear-gradient(
     to top,
-    rgba(0,0,0,0.93) 0%,
-    rgba(0,0,0,0.72) 28%,
-    rgba(0,0,0,0.18) 65%,
+    rgba(0,0,0,0.96) 0%,
+    rgba(0,0,0,0.90) 20%,
+    rgba(0,0,0,0.60) 50%,
     transparent 100%
   );
 }
@@ -89,9 +88,11 @@ html, body {
   letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35);
 }
 
-/* ── SCROLL CONTAINER ── */
+/* ── SCROLL CONTAINER ──
+   Starts at 44vh — face is in the top ~44%, chat lives below */
 .scroll-wrap {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  position: fixed;
+  top: 44vh; left: 0; right: 0; bottom: 0;
   z-index: 100; overflow-y: auto; overflow-x: hidden;
   -webkit-overflow-scrolling: touch; scroll-behavior: smooth;
 }
@@ -99,10 +100,8 @@ html, body {
 
 .chat-area {
   max-width: 480px; margin: 0 auto;
-  padding: calc(env(safe-area-inset-top, 0px) + 80px) 16px calc(env(safe-area-inset-bottom, 0px) + 110px);
+  padding: 12px 16px calc(env(safe-area-inset-bottom, 0px) + 110px);
   display: flex; flex-direction: column; gap: 0;
-  mask-image: linear-gradient(to bottom, transparent 0px, #000 64px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0px, #000 64px);
 }
 
 /* ── DATE SEPARATOR ── */
