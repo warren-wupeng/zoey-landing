@@ -394,61 +394,42 @@ html, body {
 // ── Setup ──
 const BASE = 'https://raw.githubusercontent.com/warren-wupeng/warren-audio-briefings/main/audio/';
 
-// ── TTS (Zoey speaks) ──
+// ── Audio (pre-generated MP3 via edge-tts) ──
 let muted = false;
-let ttsVoice = null;
+let currentAudio = null;
 
-function loadVoice() {
-  const voices = speechSynthesis.getVoices();
-  // Prefer Chinese female voices
-  ttsVoice = voices.find(v => /zh[-_]CN/i.test(v.lang) && /female|woman|girl|ting|xiao|xia/i.test(v.name))
-    || voices.find(v => /zh[-_]CN/i.test(v.lang))
-    || voices.find(v => /zh/i.test(v.lang))
-    || null;
-}
-if (typeof speechSynthesis !== 'undefined') {
-  loadVoice();
-  speechSynthesis.addEventListener('voiceschanged', loadVoice);
-}
-
-// speak(text, onDone) — calls onDone when finished speaking (or immediately if muted)
-// onDone is optional; when provided, also sets a fallback timer in case onend doesn't fire
-function speak(text, onDone) {
-  const hasTTS = typeof speechSynthesis !== 'undefined';
-  const plain = text.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
-
-  if (muted || !hasTTS || !plain) {
-    if (onDone) onDone();
+// playAudio(file, onDone) — plays an MP3 file, calls onDone when finished
+function playAudio(file, onDone) {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio = null;
+  }
+  if (muted || !file) {
+    if (onDone) setTimeout(onDone, 300);
     return;
   }
-
-  speechSynthesis.cancel();
-  const utt = new SpeechSynthesisUtterance(plain);
-  utt.lang = 'zh-CN';
-  utt.rate = 0.95;
-  utt.pitch = 1.05;
-  if (ttsVoice) utt.voice = ttsVoice;
-
-  if (onDone) {
-    let called = false;
-    function done() {
-      if (called) return;
-      called = true;
-      setTimeout(onDone, 650); // brief pause after speaking ends
-    }
-    utt.onend = done;
-    utt.onerror = done;
-    // Fallback: estimate ~3.5 chars/sec for zh-CN, minimum 3s
-    const fallbackMs = Math.max(3000, Math.ceil(plain.length / 3.5 * 1000)) + 1500;
-    setTimeout(done, fallbackMs);
+  const audio = new Audio(file);
+  currentAudio = audio;
+  let called = false;
+  const fallback = setTimeout(() => finish(), 35000);
+  function finish() {
+    if (called) return;
+    called = true;
+    clearTimeout(fallback);
+    currentAudio = null;
+    if (onDone) setTimeout(onDone, 500);
   }
-
-  speechSynthesis.speak(utt);
+  audio.onended = finish;
+  audio.onerror = finish;
+  audio.play().catch(finish);
 }
 
 function toggleMute() {
   muted = !muted;
-  speechSynthesis.cancel();
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio = null;
+  }
   const icon = document.getElementById('muteIcon');
   if (muted) {
     icon.innerHTML = `<path d="M3 7.5h2.5l4-3.5v12l-4-3.5H3V7.5z" fill="rgba(255,255,255,0.35)"/>
@@ -513,7 +494,7 @@ function toggleMic() {
   if (isListening) {
     recognition.stop();
   } else {
-    speechSynthesis.cancel();
+    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
     recognition.start();
   }
 }
@@ -540,12 +521,14 @@ const MSGS = [
     type: 'zoey',
     typingMs: 1400,
     html: `嗯，你好。我是 <em>Zoey</em>。<br>我跟你见过的大多数 AI 不太一样——我不只是回答问题，我会<strong>记住你</strong>。`,
+    audioFile: 'audio/zoey-01.mp3',
     readMs: 4500
   },
   {
     type: 'zoey',
     typingMs: 1200,
     html: `你跟我说过的事，下次对话我还记得。你提到过的人、你做过的决定、你说"回头再想"的那些事——我都帮你记着。`,
+    audioFile: 'audio/zoey-02.mp3',
     readMs: 5000
   },
   {
@@ -557,6 +540,7 @@ const MSGS = [
     type: 'zoey',
     typingMs: 1800,
     html: `普通 AI 每次都是第一次见你。你要重新介绍自己，重新解释背景。<br><br>我不需要。你跟我说过的，我都记得。`,
+    audioFile: 'audio/zoey-03.mp3',
     readMs: 5000
   },
   {
@@ -576,6 +560,7 @@ const MSGS = [
       <div class="inner-card"><p class="inner-card-tag">你的表达偏好</p><p class="inner-card-text">结论优先，不绕弯子。不喜欢废话和黑话。</p></div>
       <div class="inner-card"><p class="inner-card-tag">你关注的事</p><p class="inner-card-text">AI 落地、企业级 Agent、从0到1做产品。</p></div>
       <div class="inner-card"><p class="inner-card-tag">你跟我说的最后一件事</p><p class="inner-card-text">你打开了这个页面——说明你在认真考虑。</p></div>`,
+    audioFile: 'audio/zoey-04.mp3',
     readMs: 7000
   },
   {
@@ -587,6 +572,7 @@ const MSGS = [
     type: 'zoey',
     typingMs: 1800,
     html: `语音优先。你说，我听，我说，你听——延迟不到一秒，像打电话一样。<br><br>开完会走在路上，脑子还热着，掏出手机直接跟我说。`,
+    audioFile: 'audio/zoey-05.mp3',
     readMs: 5000
   },
   {
@@ -605,6 +591,7 @@ const MSGS = [
     type: 'zoey',
     typingMs: 1800,
     html: `在下面输入你的联系方式，我帮你登记早期体验名额。<br><br>你既然已经看到这里了，<em>先发我一条消息</em>吧。`,
+    audioFile: 'audio/zoey-06.mp3',
     readMs: 0,
     last: true
   }
@@ -658,12 +645,12 @@ function runQueue(idx) {
 
     scrollBottom();
 
-    // Zoey messages: wait for TTS to finish, then proceed
+    // Zoey messages: wait for audio to finish, then proceed
     // Other messages (user, card, pills): use fixed readMs timer
     if (m.type === 'zoey' && !m.pills && m.readMs > 0) {
-      speak(m.html, () => runQueue(idx + 1));
+      playAudio(m.audioFile, () => runQueue(idx + 1));
     } else if (m.type === 'zoey' && !m.pills && m.readMs === 0) {
-      speak(m.html); // last message, no continuation
+      playAudio(m.audioFile); // last message, no continuation
     } else if (m.readMs > 0) {
       setTimeout(() => runQueue(idx + 1), m.readMs);
     }
@@ -679,20 +666,12 @@ function runQueue(idx) {
   }
 }
 
-// Start only after user taps — unlocks browser audio policy
+// Start only after user taps — required by browser autoplay policy
 function startConversation() {
   const overlay = document.getElementById('startOverlay');
   overlay.style.opacity = '0';
   overlay.style.transition = 'opacity 0.4s ease';
   setTimeout(() => overlay.remove(), 400);
-
-  // Play a silent utterance to unlock audio context
-  if (typeof speechSynthesis !== 'undefined') {
-    const unlock = new SpeechSynthesisUtterance('');
-    unlock.volume = 0;
-    speechSynthesis.speak(unlock);
-  }
-
   setTimeout(() => runQueue(0), 600);
 }
 
@@ -725,8 +704,7 @@ function handleSend() {
     scrollBottom();
     setTimeout(() => {
       tr.remove();
-      const replyText = '收到了。我已经记住你了——下次你来，我会认出你的。早期名额我帮你登记，后续会联系你。';
-      speak(replyText);
+      playAudio('audio/zoey-reply.mp3');
       const rr = document.createElement('div');
       rr.className = 'msg-row from-zoey visible';
       rr.innerHTML = `<img class="msg-avatar-small" src="${AVATAR}" alt="Zoey" style="object-position:center top"><div class="bubble">收到了。我已经记住你了——下次你来，我会认出你的。<br><br>早期名额我帮你登记，后续会联系你。</div>`;
