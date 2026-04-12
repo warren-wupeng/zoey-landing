@@ -549,8 +549,8 @@ const MSGS = [
   },
   {
     type: 'card',
-    html: `<p class="chat-card-label">主动追踪</p><p class="chat-card-text">你上次提到想找机会跟某个合作方单独谈，但一直没腾出时间。下次你来，我会主动问你：<em>那件事，有进展了吗？</em></p>`,
-    readMs: 4500
+    html: `<p class="chat-card-label">主动追踪</p><p class="chat-card-text" style="margin-bottom:10px;">⏰ 每天早上，她已经把你今天需要知道的事准备好了。</p><p class="chat-card-text">⚡ 你说要做的事，超过三天没动静——她会主动来问。</p>`,
+    readMs: 5000
   },
   {
     type: 'user',
@@ -578,6 +578,13 @@ const MSGS = [
     html: `戴着耳机就能用。开完会走在路上，脑子还热着——直接开口跟我说，不用打字，不需要整理上下文。<br><br>我听到你，我回应你。<em>像打电话，不像在用工具。</em>`,
     audioFile: 'audio/zoey-05.mp3',
     readMs: 5500
+  },
+  {
+    type: 'zoey',
+    typingMs: 1000,
+    html: `比如，你刚才提到你在认真考虑——<strong>我已经记下来了</strong>。<br><br>下次你来，我会主动问你：<em>想清楚了吗？</em>`,
+    audioFile: 'audio/zoey-05b.mp3',
+    readMs: 5000
   },
   {
     type: 'zoey',
