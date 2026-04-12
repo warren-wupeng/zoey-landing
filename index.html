@@ -524,77 +524,77 @@ const MSGS = [
   {
     type: 'zoey',
     typingMs: 1400,
-    html: `嗯，你好。我是 <em>Zoey</em>。<br>我跟你见过的大多数 AI 不太一样——我不只是回答问题，我会<strong>记住你</strong>。`,
+    html: `嗯，你好。我是 <em>Zoey</em>。<br>你来这里，大概是因为脑子里同时转着太多事情——会议、决定、人、事——但没有一个地方能帮你全部兜住。`,
     audioFile: 'audio/zoey-01.mp3',
-    readMs: 4500
-  },
-  {
-    type: 'zoey',
-    typingMs: 1200,
-    html: `你跟我说过的事，下次对话我还记得。你提到过的人、你做过的决定、你说"回头再想"的那些事——我都帮你记着。`,
-    audioFile: 'audio/zoey-02.mp3',
     readMs: 5000
   },
   {
+    type: 'zoey',
+    typingMs: 1000,
+    html: `我做的事只有一件：<strong>记住你说过的每一件事</strong>，然后在你需要的时候，主动帮你找回来。<br>你们之间没有重置键。`,
+    audioFile: 'audio/zoey-02.mp3',
+    readMs: 4500
+  },
+  {
     type: 'user',
-    html: `那跟普通 AI 比，你有什么不一样？`,
+    html: `这跟普通 AI 有什么区别？`,
     readMs: 2800
   },
   {
     type: 'zoey',
     typingMs: 1800,
-    html: `普通 AI 每次都是第一次见你。你要重新介绍自己，重新解释背景。<br><br>我不需要。你跟我说过的，我都记得。`,
+    html: `普通 AI 每次都是第一次见你。你要重新解释背景、重新介绍人物关系、重新说"上次说到哪里了"。<br><br>我不需要。你说过的，<strong>我全记得</strong>。`,
     audioFile: 'audio/zoey-03.mp3',
     readMs: 5000
   },
   {
     type: 'card',
-    html: `<p class="chat-card-label">比如说</p><p class="chat-card-text">你上周提到过陈总对成本有顾虑，今天开会前我会<em>主动提醒你</em>——不用你来问我。</p>`,
+    html: `<p class="chat-card-label">主动追踪</p><p class="chat-card-text">你上次提到想找机会跟某个合作方单独谈，但一直没腾出时间。下次你来，我会主动问你：<em>那件事，有进展了吗？</em></p>`,
     readMs: 4500
   },
   {
     type: 'user',
-    html: `那你现在都记住我什么了？`,
+    html: `那你现在了解我什么了？`,
     readMs: 2500
   },
   {
     type: 'zoey',
     typingMs: 2000,
-    html: `<p style="margin-bottom:12px;">刚认识，不多。但已经记了一些：</p>
-      <div class="inner-card"><p class="inner-card-tag">你的表达偏好</p><p class="inner-card-text">结论优先，不绕弯子。不喜欢废话和黑话。</p></div>
-      <div class="inner-card"><p class="inner-card-tag">你关注的事</p><p class="inner-card-text">AI 落地、企业级 Agent、从0到1做产品。</p></div>
-      <div class="inner-card"><p class="inner-card-tag">你跟我说的最后一件事</p><p class="inner-card-text">你打开了这个页面——说明你在认真考虑。</p></div>`,
+    html: `<p style="margin-bottom:12px;">刚认识，但已经勾勒出一个轮廓：</p>
+      <div class="inner-card"><p class="inner-card-tag">你的角色</p><p class="inner-card-text">决策者。你关心方向和人，不是细节执行。</p></div>
+      <div class="inner-card"><p class="inner-card-tag">你的节奏</p><p class="inner-card-text">快。能一句话说清楚的事，不绕弯子。</p></div>
+      <div class="inner-card"><p class="inner-card-tag">你的痛点</p><p class="inner-card-text">脑子里兜着太多，需要一个不用交代背景就能直接说话的地方。</p></div>`,
     audioFile: 'audio/zoey-04.mp3',
     readMs: 7000
   },
   {
     type: 'user',
-    html: `你是语音的？还是只能打字？`,
+    html: `语音怎么用？`,
     readMs: 2500
   },
   {
     type: 'zoey',
     typingMs: 1800,
-    html: `语音优先。你说，我听，我说，你听——延迟不到一秒，像打电话一样。<br><br>开完会走在路上，脑子还热着，掏出手机直接跟我说。`,
+    html: `戴着耳机就能用。开完会走在路上，脑子还热着——直接开口跟我说，不用打字，不需要整理上下文。<br><br>我听到你，我回应你。<em>像打电话，不像在用工具。</em>`,
     audioFile: 'audio/zoey-05.mp3',
-    readMs: 5000
+    readMs: 5500
   },
   {
     type: 'zoey',
     typingMs: 600,
-    html: `<div class="feature-pills"><span class="pill">实时语音</span><span class="pill">长期记忆</span><span class="pill">主动提醒</span><span class="pill">中英文</span></div>`,
+    html: `<div class="feature-pills"><span class="pill">实时语音</span><span class="pill">长期记忆</span><span class="pill">主动追踪</span><span class="pill">中英文</span></div>`,
     pills: true,
     readMs: 3500
   },
   {
     type: 'user',
-    html: `好，我有点心动了。怎么开始？`,
-    readMs: 2800
+    html: `好，我想试试。`,
+    readMs: 2500
   },
   {
     type: 'zoey',
     typingMs: 1800,
-    html: `在下面输入你的联系方式，我帮你登记早期体验名额。<br><br>你既然已经看到这里了，<em>先发我一条消息</em>吧。`,
+    html: `在下面留下联系方式，我帮你登记早期名额。<br><br>既然你已经看到这里了——<em>先发我一条消息吧。</em>`,
     audioFile: 'audio/zoey-06.mp3',
     readMs: 0,
     last: true
