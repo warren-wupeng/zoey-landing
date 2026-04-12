@@ -299,11 +299,51 @@ html, body {
   text-align: center; margin-top: 8px;
   max-width: 480px; margin-left: auto; margin-right: auto;
 }
+
+/* ── START OVERLAY ── */
+#startOverlay {
+  position: fixed; inset: 0; z-index: 500;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-end;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 80px);
+  background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%);
+}
+#startBtn {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(255,255,255,0.35);
+  border-radius: 40px;
+  padding: 16px 44px;
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  display: flex; align-items: center; gap: 10px;
+}
+#startBtn:hover, #startBtn:active {
+  background: rgba(255,255,255,0.22);
+  transform: scale(1.04);
+}
+#startBtn svg { flex-shrink: 0; }
 </style>
 </head>
 <body>
 
 <div id="bgPhoto"></div>
+
+<!-- Start overlay — tap to unlock audio and begin -->
+<div id="startOverlay">
+  <button id="startBtn" onclick="startConversation()">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <path d="M4 3.5h2.5l3.5-2.5v12l-3.5-2.5H4V3.5z" fill="rgba(255,255,255,0.9)"/>
+      <path d="M12 5.5c.9.8 1.5 2 1.5 3.3s-.6 2.5-1.5 3.3" stroke="rgba(255,255,255,0.9)" stroke-width="1.3" stroke-linecap="round"/>
+    </svg>
+    开始与 Zoey 对话
+  </button>
+</div>
 
 <div class="header">
   <div class="header-inner">
@@ -639,8 +679,22 @@ function runQueue(idx) {
   }
 }
 
-// Start after a short pause
-setTimeout(() => runQueue(0), 800);
+// Start only after user taps — unlocks browser audio policy
+function startConversation() {
+  const overlay = document.getElementById('startOverlay');
+  overlay.style.opacity = '0';
+  overlay.style.transition = 'opacity 0.4s ease';
+  setTimeout(() => overlay.remove(), 400);
+
+  // Play a silent utterance to unlock audio context
+  if (typeof speechSynthesis !== 'undefined') {
+    const unlock = new SpeechSynthesisUtterance('');
+    unlock.volume = 0;
+    speechSynthesis.speak(unlock);
+  }
+
+  setTimeout(() => runQueue(0), 600);
+}
 
 // ── Send handler ──
 function handleSend() {
