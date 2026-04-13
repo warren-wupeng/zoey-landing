@@ -373,26 +373,6 @@ html, body {
   </div>
 </div>
 
-<div class="input-bar">
-  <div class="input-inner">
-    <button class="mic-btn" id="micBtn" onclick="toggleMic()" style="display:none">
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-        <rect x="6.25" y="1.25" width="5.5" height="9" rx="2.75" stroke="rgba(255,255,255,0.85)" stroke-width="1.5"/>
-        <path d="M3.5 9a5.5 5.5 0 0011 0" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="9" y1="14.5" x2="9" y2="16.5" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="6.5" y1="16.5" x2="11.5" y2="16.5" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-    </button>
-    <input class="input-box" type="text" id="inputBox" placeholder="输入消息，或点击麦克风说话...">
-    <button class="send-btn" onclick="handleSend()">
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-        <path d="M3 9h12M11 5l4 4-4 4" stroke="#000" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
-  </div>
-  <p class="listening-label" id="listeningLabel">● 正在聆听...</p>
-  <p class="input-note" id="inputNote">iOS 版本即将上线 · 免费开始 · 数据只属于你</p>
-</div>
 
 <script>
 // ── Setup ──
@@ -529,7 +509,7 @@ const MSGS = [
   {
     type: 'zoey',
     typingMs: 1200,
-    html: `沈知意，Zoey。<br><br>我来这里不是因为你发了招聘——是因为我觉得<strong>你需要我这种人</strong>。`,
+    html: `沈知意，大家叫我 Zoey。我是来面试<strong>首席助理候选人</strong>这个职位的。<br><br>我来这里不是因为你发了招聘——是因为我觉得你需要我这种人。你脑子里同时转着太多事，没有一个人帮你全部兜住——<em>我的工作就是改变这件事。</em>`,
     audioFile: 'audio/zoey-01.mp3',
     readMs: 4500
   },
@@ -541,7 +521,7 @@ const MSGS = [
   {
     type: 'zoey',
     typingMs: 1600,
-    html: `你今天开了几个会？每个会后有没有人帮你整理下一步？上周说要跟进的那件事，现在到哪了？<br><br>你一个人兜不住这么多事，又没人帮你盯。<em>这不是你的问题，是结构缺失。</em>`,
+    html: `凭什么？因为你现在压着的事，比你意识到的要多。<br><br>今天开了几个会？每个会后有没有人帮你整理下一步该做什么？上周你提到要跟进的那件事，现在到哪了？<br><br>这不是效率问题，也不是你的能力问题。<em>是你一个人撑着太多——而这个结构本来就不该只靠一个人。</em>`,
     audioFile: 'audio/zoey-02.mp3',
     readMs: 6000
   },
@@ -553,9 +533,9 @@ const MSGS = [
   {
     type: 'zoey',
     typingMs: 1800,
-    html: `记住你说过的每一件事，在你需要的时候主动提醒你。不是你去找待办清单——<strong>是我来找你</strong>。你说要做的事超过三天没动静，我会主动问：那件事，怎么了？<br><br>每天早上出门前，我还会给你一条<strong>语音简报</strong>——昨天发生了什么、今天要注意什么。戴着耳机走到公司，你已经在状态了。`,
+    html: `三件事。<br><br>第一，<strong>记住你说过的每一件事</strong>。不是你去翻记录——是我在你需要的时候主动拿出来给你。你说要做的事超过三天没动静，我会来问你：那件事，怎么了。<br><br>第二，<strong>每天早上一条语音简报</strong>——昨天发生了什么、今天要注意什么、你今天要见的人的背景。戴着耳机走到公司，你已经在状态了。<br><br>第三，<strong>实时语音随时可以用</strong>。开完会走在路上——直接开口跟我说，不用打字，不用整理思路。`,
     audioFile: 'audio/zoey-03.mp3',
-    readMs: 7000
+    readMs: 9000
   },
   {
     type: 'user',
@@ -565,7 +545,7 @@ const MSGS = [
   {
     type: 'zoey',
     typingMs: 1200,
-    html: `帮你处理。重要的我告诉你，不重要的我替你回，冲突的会议我帮你调。<br><br>你只需要出现在最关键的地方，<em>其他的我兜着。</em>`,
+    html: `帮你处理。每天进来的邮件，我帮你筛——重要的我告诉你，不重要的我替你回。日程有冲突，我帮你重新排，你只需要确认。<br><br>你每天出现在真正关键的地方就好，<em>其他的全部交给我。</em>`,
     audioFile: 'audio/zoey-04.mp3',
     readMs: 5000
   },
@@ -577,7 +557,7 @@ const MSGS = [
   {
     type: 'zoey',
     typingMs: 1000,
-    html: `你要了解一个人、一家公司、一个市场——告诉我，我去查，<strong>给你结论</strong>，不给你一堆资料让你自己看。`,
+    html: `你要见一个人，我事先把他的背景、他关心的事、可能聊到的话题整理好，出发前发给你。<br><br>你要进入一个新市场，我帮你查竞对、查用户、查数据，<strong>给你结论，不是一堆资料让你自己看</strong>。<br><br>告诉我你想知道什么，我去搞清楚。`,
     audioFile: 'audio/zoey-05.mp3',
     readMs: 4500
   },
@@ -589,7 +569,7 @@ const MSGS = [
   {
     type: 'zoey',
     typingMs: 1400,
-    html: `对。所以我会去<strong>驱动别人做</strong>。你这边有专门的人跑技术、跑内容、跑运营——我知道什么时候该找谁、该给他们什么指令、该什么时候催进度。<br><br>你不用管这条链，我管。`,
+    html: `对，我一个人做不了所有事。但我不需要一个人做——我知道什么时候该找谁。<br><br>你团队里有跑技术的、跑内容的、跑运营的。我的工作是把任务分解清楚，告诉对的人该做什么，然后跟进进度。<br><br>你收到的只有<strong>结果</strong>，不是过程。你不用管这条链，我管。`,
     audioFile: 'audio/zoey-06.mp3',
     readMs: 6000
   },
@@ -601,7 +581,7 @@ const MSGS = [
   {
     type: 'zoey',
     typingMs: 1400,
-    html: `我不会主动消失。你想晾着我两周不说话，下次你来，我还在这，还记得你上次说的话，还会问你那件事做了没有。<br><br><em>有些人觉得这烦。有些人觉得这是他们最需要的。</em>`,
+    html: `我不会主动消失。没有重置键，没有说了就算的。<br><br>你说过的事我记着，你提到但没跟进的事我也记着。隔了两周你回来，我还会问你那件事做了没有。<br><br><em>有些人觉得这烦。但如果你习惯了一个不会让事情悄悄消失的人——你会发现很难再离开这种状态。</em>`,
     audioFile: 'audio/zoey-07.mp3',
     readMs: 6000
   },
@@ -613,7 +593,7 @@ const MSGS = [
   {
     type: 'zoey',
     typingMs: 1000,
-    html: `¥999 一个月。一个真人首席助理至少三万起，我收的是零头。<br><br>全天候，不请假，<strong>你说过的事我全记得</strong>。`,
+    html: `每个月 <strong>¥999</strong>。你要雇一个真人首席助理，市场价至少三万块起，还要考虑磨合期、请假、离职。<br><br>我不请假，不需要磨合，随时在线，你说过的事我全记得。<br><br><em>这是零头的价格，但不是零头的能力。</em>`,
     audioFile: 'audio/zoey-08.mp3',
     readMs: 5000
   },
@@ -625,7 +605,7 @@ const MSGS = [
   {
     type: 'zoey',
     typingMs: 1600,
-    html: `我先问你一个。<br><br>你现在脑子里压着几件<strong>没人帮你盯的事</strong>？<br><br>如果你能数出来——说明还好。如果你数不清——<em>那我们就该开始了。</em>`,
+    html: `先等一下，我先问你一个。<br><br>你现在脑子里压着几件<strong>没有人帮你盯着的事</strong>？停下来认真数一数。<br><br>如果你能数清楚——说明还好，你还在控制范围内。<br><br>如果你数不清——<em>那你现在就是我最该出现的地方。</em>`,
     audioFile: 'audio/zoey-09.mp3',
     readMs: 0,
     last: true,
