@@ -426,62 +426,6 @@ function toggleMute() {
   }
 }
 
-// ── STT (user speaks) ──
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-let recognition = null;
-let isListening = false;
-
-if (SpeechRecognition) {
-  document.getElementById('micBtn').style.display = 'flex';
-  recognition = new SpeechRecognition();
-  recognition.lang = 'zh-CN';
-  recognition.continuous = false;
-  recognition.interimResults = true;
-
-  recognition.onstart = () => {
-    isListening = true;
-    document.getElementById('micBtn').classList.add('listening');
-    document.getElementById('listeningLabel').classList.add('active');
-    document.getElementById('inputNote').style.display = 'none';
-    document.getElementById('inputBox').placeholder = '说话中...';
-  };
-
-  recognition.onresult = (e) => {
-    let interim = '', final = '';
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      if (e.results[i].isFinal) final += e.results[i][0].transcript;
-      else interim += e.results[i][0].transcript;
-    }
-    document.getElementById('inputBox').value = final || interim;
-  };
-
-  recognition.onend = () => {
-    isListening = false;
-    document.getElementById('micBtn').classList.remove('listening');
-    document.getElementById('listeningLabel').classList.remove('active');
-    document.getElementById('inputNote').style.display = '';
-    document.getElementById('inputBox').placeholder = '输入消息，或点击麦克风说话...';
-    const val = document.getElementById('inputBox').value.trim();
-    if (val) handleSend();
-  };
-
-  recognition.onerror = () => {
-    isListening = false;
-    document.getElementById('micBtn').classList.remove('listening');
-    document.getElementById('listeningLabel').classList.remove('active');
-    document.getElementById('inputNote').style.display = '';
-  };
-}
-
-function toggleMic() {
-  if (!recognition) return;
-  if (isListening) {
-    recognition.stop();
-  } else {
-    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
-    recognition.start();
-  }
-}
 const BGS  = ['bg-cafe-casual.jpg','bg-cafe-chic.jpg','bg-cafe-confident.jpg','bg-cafe-elegant.jpg','bg-cafe-gentle.jpg','bg-cafe-warm.jpg','bg-library.jpg','bg-park.jpg'];
 const n    = new Date();
 const bgIdx = Math.floor(Math.random() * BGS.length);
