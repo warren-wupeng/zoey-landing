@@ -504,7 +504,7 @@ function toggleMic() {
 }
 const BGS  = ['bg-cafe-casual.jpg','bg-cafe-chic.jpg','bg-cafe-confident.jpg','bg-cafe-elegant.jpg','bg-cafe-gentle.jpg','bg-cafe-warm.jpg','bg-library.jpg','bg-park.jpg'];
 const n    = new Date();
-const bgIdx = (n.getFullYear()*10000+(n.getMonth()+1)*100+n.getDate()+Math.floor(n.getHours()/6)) % BGS.length;
+const bgIdx = Math.floor(Math.random() * BGS.length);
 document.getElementById('bgPhoto').style.backgroundImage = `url('${BASE+BGS[bgIdx]}')`;
 const AVATAR = BASE + 'zoey-avatar.jpg';
 document.getElementById('hAvatar').src = AVATAR;
