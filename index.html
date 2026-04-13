@@ -575,7 +575,10 @@ function addTimeStamp(cls, last) {
   area.appendChild(t);
 }
 
+let _queueIdx = -1;
 function runQueue(idx) {
+  if (idx <= _queueIdx) return; // prevent duplicate / out-of-order calls
+  _queueIdx = idx;
   if (idx >= MSGS.length) return;
   const m = MSGS[idx];
 
@@ -608,13 +611,22 @@ function runQueue(idx) {
     scrollBottom();
 
     // Zoey messages: wait for audio to finish, then proceed
-    // Other messages (user, card, pills): use fixed readMs timer
+    // User/card messages: wait readMs, then wait for any current audio to finish
     if (m.type === 'zoey' && !m.pills && m.readMs > 0) {
       playAudio(m.audioFile, () => runQueue(idx + 1));
     } else if (m.type === 'zoey' && !m.pills && m.readMs === 0) {
       playAudio(m.audioFile, m.cta ? () => setTimeout(showCTAChips, 600) : null);
     } else if (m.readMs > 0) {
-      setTimeout(() => runQueue(idx + 1), m.readMs);
+      setTimeout(() => {
+        // If a Zoey audio is still playing, wait for it to finish first
+        if (currentAudio) {
+          const prev = currentAudio;
+          prev.addEventListener('ended', () => runQueue(idx + 1), { once: true });
+          prev.addEventListener('error', () => runQueue(idx + 1), { once: true });
+        } else {
+          runQueue(idx + 1);
+        }
+      }, m.readMs);
     }
   }
 
