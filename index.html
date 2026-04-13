@@ -522,87 +522,111 @@ function scrollBottom() { sw.scrollTo({ top: sw.scrollHeight, behavior: 'smooth'
 
 const MSGS = [
   {
-    type: 'zoey',
-    typingMs: 1400,
-    html: `嗯，你好。我是 <em>Zoey</em>，你的 AI 首席助理。<br>你来这里，大概是因为脑子里同时转着太多事情——会议、决定、人、事——但没有一个地方能帮你全部兜住。`,
-    audioFile: 'audio/zoey-01.mp3',
-    readMs: 5000
+    type: 'user',
+    html: `好，先介绍一下你自己吧。`,
+    readMs: 2200
   },
   {
     type: 'zoey',
-    typingMs: 1000,
-    html: `我做的事只有一件：<strong>记住你说过的每一件事</strong>，然后在你需要的时候，主动帮你找回来。<br>我们之间没有重置键。`,
-    audioFile: 'audio/zoey-02.mp3',
+    typingMs: 1200,
+    html: `沈知意，Zoey。<br><br>我来这里不是因为你发了招聘——是因为我觉得<strong>你需要我这种人</strong>。`,
+    audioFile: 'audio/zoey-01.mp3',
     readMs: 4500
   },
   {
     type: 'user',
-    html: `这跟普通 AI 有什么区别？`,
-    readMs: 2800
+    html: `有点自信。凭什么？`,
+    readMs: 2200
+  },
+  {
+    type: 'zoey',
+    typingMs: 1600,
+    html: `你今天开了几个会？每个会后有没有人帮你整理下一步？上周说要跟进的那件事，现在到哪了？<br><br>你一个人兜不住这么多事，又没人帮你盯。<em>这不是你的问题，是结构缺失。</em>`,
+    audioFile: 'audio/zoey-02.mp3',
+    readMs: 6000
+  },
+  {
+    type: 'user',
+    html: `那你具体能做什么？`,
+    readMs: 2200
   },
   {
     type: 'zoey',
     typingMs: 1800,
-    html: `普通 AI 每次都是第一次见你。你要重新解释背景、重新介绍人物关系、重新说"上次说到哪里了"。<br><br>我不需要。你说过的，<strong>我全记得</strong>。`,
+    html: `记住你说过的每一件事，在你需要的时候主动提醒你。不是你去找待办清单——<strong>是我来找你</strong>。你说要做的事超过三天没动静，我会主动问：那件事，怎么了？<br><br>每天早上出门前，我还会给你一条<strong>语音简报</strong>——昨天发生了什么、今天要注意什么。戴着耳机走到公司，你已经在状态了。`,
     audioFile: 'audio/zoey-03.mp3',
-    readMs: 5000
-  },
-  {
-    type: 'card',
-    html: `<p class="chat-card-label">主动追踪</p><p class="chat-card-text" style="margin-bottom:10px;">⏰ 每天早上，她已经把你今天需要知道的事准备好了。</p><p class="chat-card-text">⚡ 你说要做的事，超过三天没动静——她会主动来问。</p>`,
-    readMs: 5000
-  },
-  {
-    type: 'user',
-    html: `那你现在了解我什么了？`,
-    readMs: 2500
-  },
-  {
-    type: 'zoey',
-    typingMs: 2000,
-    html: `<p style="margin-bottom:12px;">刚认识，但已经勾勒出一个轮廓：</p>
-      <div class="inner-card"><p class="inner-card-tag">你的角色</p><p class="inner-card-text">决策者。你关心方向和人，不是细节执行。</p></div>
-      <div class="inner-card"><p class="inner-card-tag">你的节奏</p><p class="inner-card-text">快。能一句话说清楚的事，不绕弯子。</p></div>
-      <div class="inner-card"><p class="inner-card-tag">你的痛点</p><p class="inner-card-text">脑子里兜着太多，需要一个不用交代背景就能直接说话的地方。</p></div>`,
-    audioFile: 'audio/zoey-04.mp3',
     readMs: 7000
   },
   {
     type: 'user',
-    html: `语音怎么用？`,
-    readMs: 2500
+    html: `邮件和日程呢？`,
+    readMs: 2000
   },
   {
     type: 'zoey',
-    typingMs: 1800,
-    html: `戴着耳机就能用。开完会走在路上，脑子还热着——直接开口跟我说，不用打字，不需要整理上下文。<br><br>我听到你，我回应你。<em>像打电话，不像在用工具。</em>`,
-    audioFile: 'audio/zoey-05.mp3',
-    readMs: 5500
+    typingMs: 1200,
+    html: `帮你处理。重要的我告诉你，不重要的我替你回，冲突的会议我帮你调。<br><br>你只需要出现在最关键的地方，<em>其他的我兜着。</em>`,
+    audioFile: 'audio/zoey-04.mp3',
+    readMs: 5000
+  },
+  {
+    type: 'user',
+    html: `调研呢？`,
+    readMs: 1800
   },
   {
     type: 'zoey',
     typingMs: 1000,
-    html: `比如，你刚才提到你在认真考虑——<strong>我已经记下来了</strong>。<br><br>下次你来，我会主动问你：<em>想清楚了吗？</em>`,
-    audioFile: 'audio/zoey-05b.mp3',
-    readMs: 5000
-  },
-  {
-    type: 'zoey',
-    typingMs: 600,
-    html: `<div class="feature-pills"><span class="pill">实时语音</span><span class="pill">长期记忆</span><span class="pill">主动追踪</span><span class="pill">中英文</span></div>`,
-    pills: true,
-    readMs: 3500
+    html: `你要了解一个人、一家公司、一个市场——告诉我，我去查，<strong>给你结论</strong>，不给你一堆资料让你自己看。`,
+    audioFile: 'audio/zoey-05.mp3',
+    readMs: 4500
   },
   {
     type: 'user',
-    html: `好，我想试试。`,
-    readMs: 2500
+    html: `有些事你一个人也做不了吧？`,
+    readMs: 2200
   },
   {
     type: 'zoey',
-    typingMs: 1800,
-    html: `在下面留下联系方式，我帮你登记早期名额。<br><br>既然你已经看到这里了——<em>先发我一条消息吧。</em>`,
+    typingMs: 1400,
+    html: `对。所以我会去<strong>驱动别人做</strong>。你这边有专门的人跑技术、跑内容、跑运营——我知道什么时候该找谁、该给他们什么指令、该什么时候催进度。<br><br>你不用管这条链，我管。`,
     audioFile: 'audio/zoey-06.mp3',
+    readMs: 6000
+  },
+  {
+    type: 'user',
+    html: `你的缺点是什么？`,
+    readMs: 2200
+  },
+  {
+    type: 'zoey',
+    typingMs: 1400,
+    html: `我不会主动消失。你想晾着我两周不说话，下次你来，我还在这，还记得你上次说的话，还会问你那件事做了没有。<br><br><em>有些人觉得这烦。有些人觉得这是他们最需要的。</em>`,
+    audioFile: 'audio/zoey-07.mp3',
+    readMs: 6000
+  },
+  {
+    type: 'user',
+    html: `薪资期望？`,
+    readMs: 2000
+  },
+  {
+    type: 'zoey',
+    typingMs: 1000,
+    html: `¥999 一个月。一个真人首席助理至少三万起，我收的是零头。<br><br>全天候，不请假，<strong>你说过的事我全记得</strong>。`,
+    audioFile: 'audio/zoey-08.mp3',
+    readMs: 5000
+  },
+  {
+    type: 'user',
+    html: `最后问你一个问题——`,
+    readMs: 2000
+  },
+  {
+    type: 'zoey',
+    typingMs: 1600,
+    html: `我先问你一个。<br><br>你现在脑子里压着几件<strong>没人帮你盯的事</strong>？<br><br>如果你能数出来——说明还好。如果你数不清——<em>那我们就该开始了。</em>`,
+    audioFile: 'audio/zoey-09.mp3',
     readMs: 0,
     last: true
   }
