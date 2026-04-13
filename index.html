@@ -628,9 +628,12 @@ const MSGS = [
     html: `我先问你一个。<br><br>你现在脑子里压着几件<strong>没人帮你盯的事</strong>？<br><br>如果你能数出来——说明还好。如果你数不清——<em>那我们就该开始了。</em>`,
     audioFile: 'audio/zoey-09.mp3',
     readMs: 0,
-    last: true
+    last: true,
+    cta: true
   }
 ];
+
+const FEISHU_URL = 'https://q46h9yh780.feishu.cn/share/base/form/shrcn2CTueL4dMYRNnenotRCOLf';
 
 // ── Sequential runner ──
 function makeTyping() {
@@ -685,7 +688,7 @@ function runQueue(idx) {
     if (m.type === 'zoey' && !m.pills && m.readMs > 0) {
       playAudio(m.audioFile, () => runQueue(idx + 1));
     } else if (m.type === 'zoey' && !m.pills && m.readMs === 0) {
-      playAudio(m.audioFile); // last message, no continuation
+      playAudio(m.audioFile, m.cta ? () => setTimeout(showCTAChips, 600) : null);
     } else if (m.readMs > 0) {
       setTimeout(() => runQueue(idx + 1), m.readMs);
     }
@@ -708,6 +711,84 @@ function startConversation() {
   overlay.style.transition = 'opacity 0.4s ease';
   setTimeout(() => overlay.remove(), 400);
   setTimeout(() => runQueue(0), 600);
+}
+
+// ── CTA chips ──
+function showCTAChips() {
+  // Hide input bar
+  document.getElementById('inputBar').style.display = 'none';
+
+  const wrap = document.createElement('div');
+  wrap.id = 'ctaChips';
+  wrap.style.cssText = 'display:flex;flex-direction:column;gap:10px;padding:12px 16px 24px;align-items:flex-end;';
+
+  const hired = document.createElement('button');
+  hired.textContent = '你明天来上班吧，试用期一周';
+  hired.style.cssText = 'background:var(--amber);color:#1a1408;border:none;border-radius:20px;padding:11px 20px;font-size:0.95rem;font-weight:600;cursor:pointer;max-width:80%;text-align:left;';
+  hired.onclick = () => handleChip('hired');
+
+  const wait = document.createElement('button');
+  wait.textContent = '先回去等通知吧';
+  wait.style.cssText = 'background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:11px 20px;font-size:0.95rem;cursor:pointer;max-width:80%;text-align:left;';
+  wait.onclick = () => handleChip('wait');
+
+  wrap.appendChild(hired);
+  wrap.appendChild(wait);
+  area.appendChild(wrap);
+  scrollBottom();
+}
+
+function handleChip(choice) {
+  document.getElementById('ctaChips').remove();
+
+  const isHired = choice === 'hired';
+  const userText = isHired ? '你明天来上班吧，试用期一周' : '先回去等通知吧';
+  const zoeyReply = isHired
+    ? '好。去这里留个联系方式，我来找你。'
+    : '好，我等你消息。想好了，来这里找我。';
+  const audioFile = isHired ? 'audio/zoey-cta-hired.mp3' : 'audio/zoey-cta-wait.mp3';
+
+  // User bubble
+  const uRow = document.createElement('div');
+  uRow.className = 'msg-row from-user visible';
+  uRow.style.marginTop = '8px';
+  uRow.innerHTML = `<div class="msg-avatar-placeholder">你</div><div class="bubble">${userText}</div>`;
+  const uTs = document.createElement('p');
+  uTs.className = 'msg-time from-user';
+  uTs.textContent = new Date().toLocaleTimeString('zh', { hour: '2-digit', minute: '2-digit' });
+  area.appendChild(uRow);
+  area.appendChild(uTs);
+  scrollBottom();
+
+  // Zoey typing → reply → link button
+  setTimeout(() => {
+    const tr = makeTyping();
+    area.appendChild(tr);
+    scrollBottom();
+    setTimeout(() => {
+      tr.remove();
+      const zRow = document.createElement('div');
+      zRow.className = 'msg-row from-zoey visible';
+      zRow.innerHTML = `<img class="msg-avatar-small" src="${AVATAR}" alt="Zoey" style="object-position:center top"><div class="bubble">${zoeyReply}</div>`;
+      area.appendChild(zRow);
+      addTimeStamp('', false);
+
+      // Link button
+      const linkWrap = document.createElement('div');
+      linkWrap.style.cssText = 'padding:8px 16px 32px;display:flex;justify-content:flex-end;';
+      const link = document.createElement('a');
+      link.href = FEISHU_URL;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.textContent = isHired ? '填写联系方式 →' : '想好了来找我 →';
+      link.style.cssText = 'display:inline-block;background:var(--amber);color:#1a1408;text-decoration:none;border-radius:20px;padding:11px 24px;font-size:0.95rem;font-weight:600;';
+      linkWrap.appendChild(link);
+      area.appendChild(linkWrap);
+
+      playAudio(audioFile);
+      scrollBottom();
+    }, 1600);
+  }, 500);
 }
 
 // ── Send handler ──
