@@ -381,6 +381,23 @@ const BASE = 'https://raw.githubusercontent.com/warren-wupeng/warren-audio-brief
 // ── Audio (pre-generated MP3 via edge-tts) ──
 let muted = false;
 let currentAudio = null;
+const audioCache = {};
+
+// Preload all audio files listed in MSGS + CTA replies
+function preloadAudio() {
+  const files = [
+    ...MSGS.filter(m => m.audioFile).map(m => m.audioFile),
+    'audio/zoey-cta-hired.mp3',
+    'audio/zoey-cta-wait.mp3'
+  ];
+  files.forEach(file => {
+    if (audioCache[file]) return;
+    const a = new Audio();
+    a.preload = 'auto';
+    a.src = file;
+    audioCache[file] = a;
+  });
+}
 
 // playAudio(file, onDone) — plays an MP3 file, calls onDone when finished
 function playAudio(file, onDone) {
@@ -392,7 +409,11 @@ function playAudio(file, onDone) {
     if (onDone) setTimeout(onDone, 300);
     return;
   }
-  const audio = new Audio(file);
+  // Use cached Audio object if available, otherwise create fresh
+  const audio = audioCache[file] || new Audio(file);
+  if (audioCache[file]) {
+    audio.currentTime = 0; // rewind in case it was played before
+  }
   currentAudio = audio;
   let called = false;
   const fallback = setTimeout(() => finish(), 35000);
@@ -642,6 +663,7 @@ function runQueue(idx) {
 
 // Start only after user taps — required by browser autoplay policy
 function startConversation() {
+  preloadAudio(); // kick off all downloads immediately on user gesture
   const overlay = document.getElementById('startOverlay');
   overlay.style.opacity = '0';
   overlay.style.transition = 'opacity 0.4s ease';
