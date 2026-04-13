@@ -716,7 +716,8 @@ function startConversation() {
 // ── CTA chips ──
 function showCTAChips() {
   // Hide input bar
-  document.getElementById('inputBar').style.display = 'none';
+  const bar = document.querySelector('.input-bar');
+  if (bar) bar.style.display = 'none';
 
   const wrap = document.createElement('div');
   wrap.id = 'ctaChips';
