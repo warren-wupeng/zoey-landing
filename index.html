@@ -704,7 +704,7 @@ const MSGS = [
   }
 ];
 
-const FEISHU_URL = 'https://q46h9yh780.feishu.cn/share/base/form/shrcn2CTueL4dMYRNnenotRCOLf';
+const XHS_URL = 'http://xhslink.com/o/A9lODf921kN';
 
 // ── Sequential runner ──
 function makeTyping() {
@@ -830,8 +830,8 @@ function handleChip(choice) {
   const isHired = choice === 'hired';
   const userText = isHired ? '你明天来上班吧，试用期一周' : '先回去等通知吧';
   const zoeyReply = isHired
-    ? '好。去这里留个联系方式，我来找你。'
-    : '好，我等你消息。想好了，来这里找我。';
+    ? '好。去小红书找我，在我的置顶帖下面评论一句话，我会看到你的。'
+    : '好，我等你消息。想好了，去小红书找我，我在那里。';
   const audioFile = isHired ? 'audio/zoey-cta-hired.mp3' : 'audio/zoey-cta-wait.mp3';
 
   // User bubble
@@ -863,10 +863,10 @@ function handleChip(choice) {
       const linkWrap = document.createElement('div');
       linkWrap.style.cssText = 'padding:8px 16px 32px;display:flex;justify-content:flex-end;';
       const link = document.createElement('a');
-      link.href = FEISHU_URL;
+      link.href = XHS_URL;
       link.target = '_blank';
       link.rel = 'noopener';
-      link.textContent = isHired ? '填写联系方式 →' : '想好了来找我 →';
+      link.textContent = isHired ? '去小红书评论 →' : '去小红书找我 →';
       link.style.cssText = 'display:inline-block;background:var(--amber);color:#1a1408;text-decoration:none;border-radius:20px;padding:11px 24px;font-size:0.95rem;font-weight:600;';
       linkWrap.appendChild(link);
       area.appendChild(linkWrap);
