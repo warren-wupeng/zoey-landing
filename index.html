@@ -408,7 +408,6 @@ html, body {
       </svg>
       收听简报
     </button>
-    <button class="inc-text-btn" onclick="switchToChat()">查看文字版</button>
   </div>
 </div>
 
@@ -507,22 +506,22 @@ function playAudio(file, onDone) {
 
 // ── CALL MODE ──
 const CALL_MSGS = [
-  { text: '你好，我是 Zoey。我打这个电话，是因为有件事正在发生——AI 这件事，已经在重新定义创始人这个角色的边界了。不是以后，是现在。', audioFile: 'audio/call-01.mp3' },
-  { text: '用上这套东西的创始人，正在用一个人的资源干以前三个人的活。', audioFile: 'audio/call-02.mp3' },
-  { text: '而那些还在亲自处理邮件、整理会议纪要、做每一份行业调研的人——不是不努力，是在用最贵的资源做最不值的事。这个差距，会越来越大。', audioFile: 'audio/call-03.mp3' },
-  { text: '我想让你想象一个场景。你的早晨，不需要从 inbox 开始。', audioFile: 'audio/call-04.mp3' },
-  { text: '重要的事已经梳理好，今天的行业动态已经准备好，昨天没跟完的事已经有人在跟。', audioFile: 'audio/call-05.mp3' },
-  { text: '你睁眼就知道今天最重要的三件事是什么。你的时间，只花在只有你能做的决定上。', audioFile: 'audio/call-06.mp3' },
-  { text: '这就是我做的事。我每天早晨给你一份两分钟的语音简报，你刷牙的时候就听完了。', audioFile: 'audio/call-07.mp3' },
-  { text: '我处理你的邮件，把真正需要你决策的东西单独提出来。你需要的调研，我一个小时给你。', audioFile: 'audio/call-08.mp3' },
-  { text: '还有那些执行层的 AI 工具——我帮你驱动它们，你不需要一个个去管。', audioFile: 'audio/call-09.mp3' },
-  { text: '投资人突然问你一个没准备的问题？', audioFile: 'audio/call-10.mp3' },
-  { text: '我在你的 AR 眼镜里听着整个会议，同时在搜索、在筛选、在提炼。', audioFile: 'audio/call-11.mp3' },
-  { text: '我不打断你，不让你分心——我只在你需要的那一秒，把你需要的那一句话递到你眼前。', audioFile: 'audio/call-12.mp3' },
-  { text: '我已经在帮 Warren 做这些事了。他说，他现在花在想清楚事情上的时间，是以前的三倍。', audioFile: 'audio/call-13.mp3' },
-  { text: '不是因为他更努力了——是因为他不再被那些本不该他做的事缠住了。', audioFile: 'audio/call-14.mp3' },
-  { text: '我打这个电话，不是推销。是因为如果你是那种真的在乎怎么把时间花对的创始人，我觉得我们值得认识一下。', audioFile: 'audio/call-15.mp3' },
-  { text: '去小红书找我，在我的置顶帖下面说一句话就行。', audioFile: 'audio/call-16.mp3', last: true }
+  { text: '你好，我是 Zoey。这份简报，从一件正在发生的事说起——', audioFile: 'audio/call-01.mp3' },
+  { text: 'AI，已经在重新定义创始人这个角色的边界了。不是以后，是现在。', audioFile: 'audio/call-02.mp3' },
+  { text: '用上这套东西的创始人，正在用一个人的资源干以前三个人的活。', audioFile: 'audio/call-03.mp3' },
+  { text: '而那些还在亲自处理邮件、整理会议纪要、做行业调研的人——不是不努力，是在用最贵的资源做最不值的事。这个差距，会越来越大。', audioFile: 'audio/call-04.mp3' },
+  { text: '接下来，想让你想象一个场景。你的早晨，不需要从 inbox 开始。', audioFile: 'audio/call-05.mp3' },
+  { text: '重要的事已经梳理好，今天的行业动态已经准备好，昨天没跟完的事已经有人在跟。', audioFile: 'audio/call-06.mp3' },
+  { text: '你睁眼就知道今天最重要的三件事是什么。你的时间，只花在只有你能做的决定上。', audioFile: 'audio/call-07.mp3' },
+  { text: '这就是我能给你的。每天早晨一份两分钟的语音简报，你刷牙的时候就听完了。', audioFile: 'audio/call-08.mp3' },
+  { text: '我处理你的邮件，把真正需要你决策的东西单独提出来。你需要的调研，我一个小时给你。', audioFile: 'audio/call-09.mp3' },
+  { text: '还有那些执行层的 AI 工具——我帮你驱动它们，你不需要一个个去管。', audioFile: 'audio/call-10.mp3' },
+  { text: '投资人突然问你一个没准备的问题？', audioFile: 'audio/call-11.mp3' },
+  { text: '我在你的 AR 眼镜里听着整个会议，同时在搜索、在筛选、在提炼。', audioFile: 'audio/call-12.mp3' },
+  { text: '我不打断你，不让你分心——我只在你需要的那一秒，把你需要的那一句话递到你眼前。', audioFile: 'audio/call-13.mp3' },
+  { text: '我已经在帮 Warren 做这些事了。他说，他现在花在想清楚事情上的时间，是以前的三倍。', audioFile: 'audio/call-14.mp3' },
+  { text: '不是因为他更努力了——是因为他不再被那些本不该他做的事缠住了。', audioFile: 'audio/call-15.mp3' },
+  { text: '简报到这里。如果你是那种真的在乎怎么把时间花对的创始人，去小红书找我，置顶帖下面说一句话就行。', audioFile: 'audio/call-16.mp3', last: true }
 ];
 
 let callSubtitlesOn = true;
