@@ -611,12 +611,11 @@ function switchToChat() {
   const postOverlay = document.getElementById('postCallOverlay');
   if (postOverlay) { postOverlay.style.opacity = '0'; setTimeout(() => postOverlay.remove(), 300); }
   if (currentAudio) { currentAudio.pause(); currentAudio = null; }
-  clearInterval(callTimerInterval);
   // Reset chat queue so interview starts from beginning
   _queueIdx = -1;
   // Clear any previously rendered chat messages
-  const feed = document.getElementById('chatFeed');
-  if (feed) feed.innerHTML = '';
+  const feed = document.getElementById('chatArea');
+  if (feed) { feed.innerHTML = '<div class="date-sep">今天 · 第一次对话</div>'; }
   // Show chat UI
   document.getElementById('chatHeader').style.display = 'block';
   document.getElementById('scrollWrap').style.display = 'block';
