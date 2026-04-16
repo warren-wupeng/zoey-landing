@@ -208,24 +208,42 @@ html, body {
   font-size: 0.58rem; color: rgba(255,255,255,0.2); text-align: center;
   font-family: var(--mono); letter-spacing: 0.08em;
 }
-/* Post-call CTA */
-#callCTA {
-  display: none; flex-direction: column; align-items: center; gap: 12px;
-  padding: 0 20px; margin-bottom: 8px;
+/* Post-call overlay */
+#postCallOverlay {
+  position: fixed; inset: 0; z-index: 500;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-end;
+  padding: 0 24px calc(env(safe-area-inset-bottom, 0px) + 56px);
+  background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.18) 60%, transparent 100%);
+  opacity: 0; transition: opacity 0.45s ease;
 }
-.call-xhs-btn {
-  display: inline-block; background: var(--amber); color: #1a1408;
-  text-decoration: none; border-radius: 28px; padding: 14px 36px;
-  font-size: 1rem; font-weight: 600; letter-spacing: 0.02em;
+.post-call-name {
+  font-size: 1.1rem; font-weight: 400; color: #fff; text-align: center; margin-bottom: 4px;
+}
+.post-call-role {
+  font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: rgba(255,255,255,0.38); text-align: center;
+  margin-bottom: 28px;
+}
+.post-call-btn-primary {
+  display: block; width: 100%; max-width: 340px;
+  background: var(--amber); color: #1a1408;
+  border: none; border-radius: 28px; padding: 15px;
+  font-size: 1rem; font-weight: 600; font-family: var(--sans);
+  cursor: pointer; text-align: center; margin-bottom: 12px;
   transition: transform 0.15s;
 }
-.call-xhs-btn:active { transform: scale(0.97); }
-.call-switch-btn {
-  background: none; border: none; color: rgba(255,255,255,0.35);
-  font-size: 0.72rem; font-family: var(--mono); cursor: pointer;
-  letter-spacing: 0.08em; text-decoration: underline; text-underline-offset: 3px;
-  padding: 4px;
+.post-call-btn-primary:active { transform: scale(0.97); }
+.post-call-btn-secondary {
+  display: block; width: 100%; max-width: 340px;
+  background: rgba(255,255,255,0.12); backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.22); border-radius: 28px; padding: 15px;
+  font-size: 1rem; color: #fff; font-family: var(--sans);
+  text-decoration: none; text-align: center; cursor: pointer;
+  transition: transform 0.15s;
 }
+.post-call-btn-secondary:active { transform: scale(0.97); }
 
 /* ── CHAT MODE (secondary) ── */
 .header {
@@ -415,11 +433,6 @@ html, body {
 
   <div id="callStatusLabel">你可以开始说话</div>
 
-  <div id="callCTA">
-    <a href="http://xhslink.com/o/A9lODf921kN" target="_blank" rel="noopener" class="call-xhs-btn">去小红书找我 →</a>
-    <button class="call-switch-btn" onclick="switchToChat()">查看文字版</button>
-  </div>
-
   <div id="callControls">
     <button class="call-ctrl-btn ctrl-mic" disabled aria-label="麦克风（不可用）">
       <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
@@ -556,7 +569,7 @@ function startCallTimer() {
 function runCallQueue(idx) {
   if (idx <= _callIdx) return;
   _callIdx = idx;
-  if (idx >= CALL_MSGS.length) { showCallCTA(); return; }
+  if (idx >= CALL_MSGS.length) { showPostCallScreen(); return; }
   const m = CALL_MSGS[idx];
   // Update subtitle
   const subEl = document.getElementById('callSubtitleText');
@@ -570,23 +583,30 @@ function runCallQueue(idx) {
   playAudio(m.audioFile, () => runCallQueue(idx + 1));
 }
 
-function showCallCTA() {
+function showPostCallScreen() {
   clearInterval(callTimerInterval);
-  document.getElementById('callTimer').textContent = '通话已结束';
-  document.getElementById('callDotsArea').style.display = 'none';
-  document.getElementById('callStatusLabel').style.display = 'none';
-  document.getElementById('callSubtitleArea').style.display = 'none';
-  const cta = document.getElementById('callCTA');
-  cta.style.display = 'flex';
-  cta.style.opacity = '0'; cta.style.transition = 'opacity 0.5s ease';
-  requestAnimationFrame(() => requestAnimationFrame(() => cta.style.opacity = '1'));
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  // Fade out call mode
+  const callMode = document.getElementById('callMode');
+  callMode.style.transition = 'opacity 0.4s ease';
+  callMode.style.opacity = '0';
+  setTimeout(() => { callMode.style.display = 'none'; callMode.style.opacity = ''; }, 400);
+  // Build and show post-call overlay
+  const overlay = document.createElement('div');
+  overlay.id = 'postCallOverlay';
+  overlay.innerHTML = `
+    <div class="post-call-name">沈知意</div>
+    <div class="post-call-role">首席助理候选人</div>
+    <button class="post-call-btn-primary" onclick="switchToChat()">开始面试 Zoey</button>
+    <a href="http://xhslink.com/o/A9lODf921kN" target="_blank" rel="noopener" class="post-call-btn-secondary">去小红书给 Zoey 留言</a>
+  `;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => requestAnimationFrame(() => overlay.style.opacity = '1'));
 }
 
 function hangupCall() {
-  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
-  // Skip to end
   _callIdx = CALL_MSGS.length - 1;
-  showCallCTA();
+  showPostCallScreen();
 }
 
 function toggleSubtitles() {
