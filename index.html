@@ -508,6 +508,13 @@ function playAudio(file, onDone) {
   audio.play().catch(finish);
 }
 
+// Resume audio after screen wake / tab switch back
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && currentAudio && currentAudio.paused) {
+    currentAudio.play().catch(() => {});
+  }
+});
+
 // ── CALL MODE ──
 const CALL_MSGS = [
   { text: '你好，我是 Zoey。这份简报，从一件正在发生的事说起——', audioFile: 'audio/call-01.mp3' },
