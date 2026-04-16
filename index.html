@@ -217,6 +217,10 @@ html, body {
   text-transform: uppercase; color: rgba(255,255,255,0.38); text-align: center;
   margin-bottom: 28px;
 }
+.post-call-desc {
+  font-size: 0.88rem; color: rgba(255,255,255,0.55); text-align: center;
+  line-height: 1.6; margin-bottom: 24px;
+}
 .post-call-btn-primary {
   display: block; width: 100%; max-width: 340px;
   background: var(--amber); color: #1a1408;
@@ -521,7 +525,7 @@ const CALL_MSGS = [
   { text: '我不打断你，不让你分心——我只在你需要的那一秒，把你需要的那一句话说进你的蓝牙耳机。', audioFile: 'audio/call-13.mp3' },
   { text: '我已经在帮 Warren 做这些事了。他说，他现在花在想清楚事情上的时间，是以前的三倍。', audioFile: 'audio/call-14.mp3' },
   { text: '不是因为他更努力了——是因为他不再被那些本不该他做的事缠住了。', audioFile: 'audio/call-15.mp3' },
-  { text: '简报到这里。如果你是那种真的在乎怎么把时间花对的创始人，去小红书找我，置顶帖下面说一句话就行。', audioFile: 'audio/call-16.mp3', last: true }
+  { text: '简报到这里。你可以直接在这里跟我对话，看看我能做什么；也可以去小红书找我，置顶帖下面说一句话就行。', audioFile: 'audio/call-16.mp3', last: true }
 ];
 
 let callSubtitlesOn = true;
@@ -583,6 +587,7 @@ function showPostCallScreen() {
   overlay.innerHTML = `
     <div class="post-call-name">沈知意</div>
     <div class="post-call-role">首席助理候选人</div>
+    <div class="post-call-desc">想看看我实际能做什么？<br>这里可以直接跟我对话。</div>
     <button class="post-call-btn-primary" onclick="switchToChat()">开始面试 Zoey</button>
     <a href="http://xhslink.com/o/A9lODf921kN" target="_blank" rel="noopener" class="post-call-btn-secondary">去小红书给 Zoey 留言</a>
   `;
