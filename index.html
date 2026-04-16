@@ -38,7 +38,6 @@ html, body {
   background-repeat: no-repeat;
   z-index: 0;
 }
-/* Bottom gradient — covers lower 60%, face in upper 40% stays clean */
 #bgPhoto::after {
   content: '';
   position: absolute;
@@ -53,18 +52,191 @@ html, body {
   );
 }
 
-/* ── HEADER ── */
+/* ── INCOMING CALL OVERLAY ── */
+#startOverlay {
+  position: fixed; inset: 0; z-index: 500;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-end;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 60px);
+  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 55%, transparent 100%);
+}
+.inc-call-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.inc-avatar-ring {
+  position: relative; width: 88px; height: 88px; margin-bottom: 8px;
+}
+.inc-ring {
+  position: absolute; border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  animation: incRing 2.2s ease-out infinite;
+}
+.inc-ring-1 { inset: -14px; animation-delay: 0s; }
+.inc-ring-2 { inset: -26px; animation-delay: 0.75s; }
+.inc-ring-3 { inset: -38px; animation-delay: 1.5s; }
+@keyframes incRing {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.15); opacity: 0; }
+}
+.inc-avatar {
+  width: 88px; height: 88px; border-radius: 50%;
+  object-fit: cover; object-position: center top;
+  border: 2px solid rgba(255,255,255,0.55);
+  position: relative; z-index: 1;
+}
+.inc-name {
+  font-size: 1.25rem; font-weight: 400; color: #fff; text-align: center;
+}
+.inc-role {
+  font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: rgba(255,255,255,0.45);
+}
+.inc-label {
+  font-size: 0.82rem; color: rgba(255,255,255,0.5); margin-top: 6px;
+  letter-spacing: 0.02em;
+}
+.inc-btn-row {
+  display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 28px;
+}
+#acceptBtn {
+  width: 70px; height: 70px; background: #4caf7d; border: none; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: transform 0.15s;
+  animation: btnPulse 2s ease-in-out infinite;
+}
+@keyframes btnPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(76,175,125,0.45); }
+  50% { box-shadow: 0 0 0 14px rgba(76,175,125,0); }
+}
+#acceptBtn:active { transform: scale(0.94); }
+.inc-accept-label {
+  font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: rgba(255,255,255,0.4); margin-top: 6px;
+}
+.inc-text-btn {
+  background: none; border: none; color: rgba(255,255,255,0.3);
+  font-size: 0.72rem; font-family: var(--mono); letter-spacing: 0.08em;
+  cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
+  margin-top: 10px; padding: 4px;
+}
+
+/* ── CALL MODE ── */
+#callMode {
+  position: fixed; inset: 0; z-index: 300;
+  display: none; flex-direction: column;
+  align-items: center;
+  padding-top: env(safe-area-inset-top, 44px);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+}
+#callTopBar {
+  width: 100%; max-width: 480px;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 14px 20px 0; position: relative;
+}
+.call-name-text {
+  font-size: 1.05rem; font-weight: 400; color: #fff; text-align: center;
+}
+.call-timer-text {
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: rgba(255,255,255,0.45); text-align: center;
+  margin-top: 5px;
+}
+#callSubBtn {
+  position: absolute; right: 20px; top: 14px;
+  background: rgba(255,255,255,0.18); backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.28); border-radius: 8px;
+  padding: 5px 11px; font-size: 0.88rem; color: rgba(255,255,255,0.85);
+  cursor: pointer; transition: opacity 0.2s;
+}
+/* Subtitle area grows to fill space, subtitle sits near bottom */
+#callSubtitleArea {
+  flex: 1; width: 100%; max-width: 480px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-end;
+  padding: 0 24px 16px;
+}
+#callSubtitleText {
+  font-size: 1rem; line-height: 1.75; font-weight: 300;
+  color: rgba(255,255,255,0.92); text-align: center;
+  background: rgba(0,0,0,0.5); backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 16px; padding: 16px 22px;
+  transition: opacity 0.35s ease; min-height: 58px;
+}
+/* Dots */
+#callDotsArea {
+  display: flex; gap: 7px; align-items: center; justify-content: center;
+  margin: 14px 0 6px;
+}
+.cdot {
+  width: 6px; height: 6px; background: rgba(255,255,255,0.75);
+  border-radius: 50%; animation: dPulse 1.2s ease-in-out infinite;
+}
+.cdot:nth-child(2) { animation-delay: .2s; }
+.cdot:nth-child(3) { animation-delay: .4s; }
+@keyframes dPulse {
+  0%,60%,100%{opacity:.25;transform:translateY(0)} 30%{opacity:1;transform:translateY(-3px)}
+}
+/* Controls */
+#callControls {
+  width: 100%; max-width: 480px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 64px; margin: 8px 0 4px;
+}
+.call-ctrl-btn {
+  width: 64px; height: 64px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: none; cursor: pointer;
+}
+.ctrl-mic {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  opacity: 0.45; cursor: default;
+}
+.ctrl-end {
+  background: #e53935; transition: transform 0.15s;
+}
+.ctrl-end:hover, .ctrl-end:active { transform: scale(1.06); }
+
+#callStatusLabel {
+  font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: rgba(255,255,255,0.35); text-align: center;
+  margin-bottom: 6px;
+}
+#callAINote {
+  font-size: 0.58rem; color: rgba(255,255,255,0.2); text-align: center;
+  font-family: var(--mono); letter-spacing: 0.08em;
+}
+/* Post-call CTA */
+#callCTA {
+  display: none; flex-direction: column; align-items: center; gap: 12px;
+  padding: 0 20px; margin-bottom: 8px;
+}
+.call-xhs-btn {
+  display: inline-block; background: var(--amber); color: #1a1408;
+  text-decoration: none; border-radius: 28px; padding: 14px 36px;
+  font-size: 1rem; font-weight: 600; letter-spacing: 0.02em;
+  transition: transform 0.15s;
+}
+.call-xhs-btn:active { transform: scale(0.97); }
+.call-switch-btn {
+  background: none; border: none; color: rgba(255,255,255,0.35);
+  font-size: 0.72rem; font-family: var(--mono); cursor: pointer;
+  letter-spacing: 0.08em; text-decoration: underline; text-underline-offset: 3px;
+  padding: 4px;
+}
+
+/* ── CHAT MODE (secondary) ── */
 .header {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 200;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
   padding: env(safe-area-inset-top, 0) 0 0;
   background: linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, transparent 100%);
+  display: none; /* hidden until chat mode activated */
 }
 .header-inner {
   max-width: 480px; margin: 0 auto;
-  padding: 16px 20px;
-  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px; display: flex; align-items: center; gap: 12px;
 }
 .header-avatar {
   width: 40px; height: 40px; border-radius: 50%;
@@ -88,13 +260,11 @@ html, body {
   letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35);
 }
 
-/* ── SCROLL CONTAINER ──
-   Starts at 44vh — face is in the top ~44%, chat lives below */
 .scroll-wrap {
-  position: fixed;
-  top: 44vh; left: 0; right: 0; bottom: 0;
+  position: fixed; top: 44vh; left: 0; right: 0; bottom: 0;
   z-index: 100; overflow-y: auto; overflow-x: hidden;
   -webkit-overflow-scrolling: touch; scroll-behavior: smooth;
+  display: none; /* hidden until chat mode activated */
 }
 .scroll-wrap::-webkit-scrollbar { display: none; }
 
@@ -104,7 +274,6 @@ html, body {
   display: flex; flex-direction: column; gap: 0;
 }
 
-/* ── DATE SEPARATOR ── */
 .date-sep {
   align-self: center;
   font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
@@ -113,7 +282,6 @@ html, body {
   padding: 5px 14px; border-radius: 20px; margin: 16px 0 24px;
 }
 
-/* ── MESSAGE ROWS ── */
 .msg-row {
   display: flex; align-items: flex-end; gap: 8px; margin-bottom: 4px;
   opacity: 0; transform: translateY(14px);
@@ -134,20 +302,17 @@ html, body {
   font-family: var(--mono); font-size: 0.55rem; color: rgba(255,255,255,0.6);
 }
 
-/* Glass bubble */
 .bubble {
   max-width: 310px; padding: 12px 16px;
   font-size: 0.88rem; line-height: 1.72; font-weight: 300;
 }
 .from-zoey .bubble {
-  background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  background: rgba(255,255,255,0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255,255,255,0.16);
   border-radius: var(--radius) var(--radius) var(--radius) 4px; color: #fff;
 }
 .from-user .bubble {
-  background: rgba(240,168,50,0.18);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  background: rgba(240,168,50,0.18); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(240,168,50,0.28);
   border-radius: var(--radius) var(--radius) 4px var(--radius);
   color: rgba(255,255,255,0.88);
@@ -161,50 +326,23 @@ html, body {
 }
 .from-user.msg-time, .msg-time.from-user { text-align: right; }
 
-/* ── TYPING ── */
 .typing-row {
   display: flex; align-items: flex-end; gap: 8px; margin-bottom: 4px;
   opacity: 0; transition: opacity 0.35s ease;
 }
 .typing-row.visible { opacity: 1; }
 .typing-bubble {
-  background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  background: rgba(255,255,255,0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255,255,255,0.16);
   border-radius: var(--radius) var(--radius) var(--radius) 4px;
   padding: 14px 18px; display: flex; gap: 5px; align-items: center;
 }
 .dot { width: 5px; height: 5px; background: rgba(255,255,255,0.7); border-radius: 50%; animation: dPulse 1.2s ease-in-out infinite; }
 .dot:nth-child(2){animation-delay:.2s} .dot:nth-child(3){animation-delay:.4s}
-@keyframes dPulse { 0%,60%,100%{opacity:.25;transform:translateY(0)} 30%{opacity:1;transform:translateY(-3px)} }
 
-/* ── INNER CARD (inside bubble) ── */
-.inner-card {
-  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
-  border-left: 2px solid rgba(240,168,50,0.6);
-  border-radius: 4px 12px 12px 4px; padding: 12px 14px; margin-bottom: 8px;
-}
-.inner-card:last-child { margin-bottom: 0; }
-.inner-card-tag {
-  font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.14em;
-  text-transform: uppercase; color: var(--amber); opacity: 0.8; margin-bottom: 5px;
-}
-.inner-card-text { color: rgba(255,255,255,0.7); line-height: 1.6; font-size: 0.82rem; font-weight: 300; }
-
-/* ── FEATURE PILLS ── */
-.feature-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
-.pill {
-  background: rgba(240,168,50,0.12); border: 1px solid rgba(240,168,50,0.25);
-  border-radius: 20px; padding: 5px 13px;
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--amber);
-}
-
-/* ── HIGHLIGHT CARD ── */
 .chat-card {
   align-self: stretch;
-  background: rgba(255,255,255,0.07);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  background: rgba(255,255,255,0.07); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm);
   padding: 18px 20px; margin: 16px 0;
   opacity: 0; transform: translateY(14px);
@@ -218,7 +356,6 @@ html, body {
 .chat-card-text { font-family: var(--serif); font-size: 1.05rem; font-weight: 300; color: #fff; line-height: 1.55; }
 .chat-card-text em { font-style: italic; color: var(--amber); }
 
-/* ── MUTE BUTTON ── */
 .mute-btn {
   background: none; border: none; cursor: pointer;
   padding: 6px; border-radius: 50%; transition: opacity 0.2s;
@@ -226,129 +363,85 @@ html, body {
 }
 .mute-btn:hover { opacity: 0.7; }
 .mute-btn svg { display: block; }
-
-/* ── INPUT BAR ── */
-.input-bar {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
-  padding: 12px 16px calc(env(safe-area-inset-bottom, 0px) + 16px);
-  background: linear-gradient(to top, rgba(0,0,0,0.90) 0%, transparent 100%);
-}
-.input-inner { max-width: 480px; margin: 0 auto; display: flex; gap: 10px; align-items: center; }
-.input-box {
-  flex: 1; background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.18); border-radius: 28px;
-  padding: 13px 20px; font-size: 0.88rem; color: #fff;
-  font-family: var(--sans); font-weight: 300; outline: none;
-  transition: border-color 0.2s, background 0.2s;
-}
-.input-box:focus { border-color: rgba(240,168,50,0.5); background: rgba(255,255,255,0.15); }
-.input-box::placeholder { color: rgba(255,255,255,0.3); }
-.send-btn {
-  width: 46px; height: 46px; background: var(--amber); border: none; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; flex-shrink: 0; transition: transform 0.15s, background 0.2s;
-}
-.send-btn:hover, .send-btn:active { background: #f5b94a; transform: scale(1.06); }
-
-/* ── MIC BUTTON ── */
-.mic-btn {
-  width: 46px; height: 46px;
-  background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.22); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; flex-shrink: 0;
-  transition: background 0.2s, border-color 0.2s, transform 0.15s;
-  position: relative;
-}
-.mic-btn.listening {
-  background: rgba(240,50,50,0.25);
-  border-color: rgba(240,80,80,0.6);
-  animation: micPulse 1.2s ease-in-out infinite;
-}
-.mic-btn.listening::before {
-  content: '';
-  position: absolute; inset: -6px;
-  border-radius: 50%; border: 1.5px solid rgba(240,80,80,0.35);
-  animation: micRing 1.2s ease-in-out infinite;
-}
-@keyframes micPulse {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.08); }
-}
-@keyframes micRing {
-  0% { opacity: 0.8; transform: scale(1); }
-  100% { opacity: 0; transform: scale(1.5); }
-}
-
-/* ── LISTENING LABEL ── */
-.listening-label {
-  display: none;
-  max-width: 480px; margin: 0 auto;
-  text-align: center;
-  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.15em;
-  text-transform: uppercase; color: rgba(240,100,100,0.9);
-  margin-top: 8px;
-}
-.listening-label.active { display: block; }
-
-.input-note {
-  font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em;
-  text-transform: uppercase; color: rgba(255,255,255,0.22);
-  text-align: center; margin-top: 8px;
-  max-width: 480px; margin-left: auto; margin-right: auto;
-}
-
-/* ── START OVERLAY ── */
-#startOverlay {
-  position: fixed; inset: 0; z-index: 500;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: flex-end;
-  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 80px);
-  background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%);
-}
-#startBtn {
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border: 1.5px solid rgba(255,255,255,0.35);
-  border-radius: 40px;
-  padding: 16px 44px;
-  color: #fff;
-  font-family: var(--sans);
-  font-size: 1rem;
-  font-weight: 400;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.15s;
-  display: flex; align-items: center; gap: 10px;
-}
-#startBtn:hover, #startBtn:active {
-  background: rgba(255,255,255,0.22);
-  transform: scale(1.04);
-}
-#startBtn svg { flex-shrink: 0; }
 </style>
 </head>
 <body>
 
 <div id="bgPhoto"></div>
 
-<!-- Start overlay — tap to unlock audio and begin -->
+<!-- ── INCOMING CALL OVERLAY (primary entry) ── -->
 <div id="startOverlay">
-  <button id="startBtn" onclick="startConversation()">
-    <svg width="22" height="16" viewBox="0 0 22 16" fill="none">
-      <line x1="1" y1="6.5" x2="1" y2="9.5" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round"/>
-      <line x1="5.5" y1="4" x2="5.5" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round"/>
-      <line x1="10" y1="1" x2="10" y2="15" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round"/>
-      <line x1="14.5" y1="4" x2="14.5" y2="12" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round"/>
-      <line x1="19" y1="6" x2="19" y2="10" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round"/>
-    </svg>
-    开始面试 Zoey
-  </button>
+  <div class="inc-call-wrap">
+    <div class="inc-avatar-ring">
+      <div class="inc-ring inc-ring-1"></div>
+      <div class="inc-ring inc-ring-2"></div>
+      <div class="inc-ring inc-ring-3"></div>
+      <img class="inc-avatar" id="incAvatar" src="" alt="Zoey">
+    </div>
+    <div class="inc-name">沈知意</div>
+    <div class="inc-role">首席助理候选人</div>
+    <div class="inc-label">来电…</div>
+    <div class="inc-btn-row">
+      <button id="acceptBtn" onclick="acceptCall()" aria-label="接听">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M6 6.5C7.5 10 9.5 13 12.5 16c3 3 6 5 9.5 6.5l3-3c.4-.4.9-.5 1.4-.3 1.5.6 3.2.9 4.9.9.8 0 1.4.6 1.4 1.4v4.8c0 .8-.6 1.4-1.4 1.4C13.4 33.7 1.3 21.6 1.3 6.7 1.3 5.9 1.9 5.3 2.7 5.3h4.8c.8 0 1.4.6 1.4 1.4 0 1.7.3 3.4.9 4.9.2.5.1 1-.3 1.4L6 15.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="scale(0.7) translate(2,2)"/>
+        </svg>
+      </button>
+      <div class="inc-accept-label">接听</div>
+      <button class="inc-text-btn" onclick="switchToChat()">查看文字版</button>
+    </div>
+  </div>
 </div>
 
-<div class="header">
+<!-- ── CALL MODE ── -->
+<div id="callMode">
+  <div id="callTopBar">
+    <div>
+      <div class="call-name-text">沈知意</div>
+      <div class="call-timer-text" id="callTimer">正在连接…</div>
+    </div>
+    <button id="callSubBtn" onclick="toggleSubtitles()">字</button>
+  </div>
+
+  <div id="callSubtitleArea">
+    <div id="callSubtitleText"></div>
+  </div>
+
+  <div id="callDotsArea">
+    <div class="cdot"></div>
+    <div class="cdot"></div>
+    <div class="cdot"></div>
+  </div>
+
+  <div id="callStatusLabel">你可以开始说话</div>
+
+  <div id="callCTA">
+    <a href="http://xhslink.com/o/A9lODf921kN" target="_blank" rel="noopener" class="call-xhs-btn">去小红书找我 →</a>
+    <button class="call-switch-btn" onclick="switchToChat()">查看文字版</button>
+  </div>
+
+  <div id="callControls">
+    <button class="call-ctrl-btn ctrl-mic" disabled aria-label="麦克风（不可用）">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <rect x="9" y="2" width="8" height="14" rx="4" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+        <path d="M4 12a9 9 0 0018 0" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="13" y1="21" x2="13" y2="24" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="9" y1="24" x2="17" y2="24" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <button class="call-ctrl-btn ctrl-end" onclick="hangupCall()" aria-label="挂断">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <line x1="6" y1="6" x2="20" y2="20" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="20" y1="6" x2="6" y2="20" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <div id="callAINote">内容由 AI 生成</div>
+</div>
+
+<!-- ── CHAT MODE (secondary) ── -->
+<div class="header" id="chatHeader">
   <div class="header-inner">
     <div class="header-avatar"><img id="hAvatar" src="" alt="Zoey"></div>
     <div>
@@ -367,74 +460,164 @@ html, body {
 
 <div class="scroll-wrap" id="scrollWrap">
   <div class="chat-area" id="chatArea">
-
     <div class="date-sep">今天 · 第一次对话</div>
-
   </div>
 </div>
 
-
 <script>
-// ── Setup ──
+// ── Background & Avatar ──
 const BASE = 'https://raw.githubusercontent.com/warren-wupeng/warren-audio-briefings/main/audio/';
+const BGS = ['bg-cafe-casual.jpg','bg-cafe-chic.jpg','bg-cafe-confident.jpg','bg-cafe-elegant.jpg','bg-cafe-gentle.jpg','bg-cafe-warm.jpg','bg-library.jpg','bg-park.jpg'];
+const bgIdx = Math.floor(Math.random() * BGS.length);
+document.getElementById('bgPhoto').style.backgroundImage = `url('${BASE+BGS[bgIdx]}')`;
+const AVATAR = BASE + 'zoey-avatar.jpg';
+document.getElementById('incAvatar').src = AVATAR;
+document.getElementById('hAvatar').src = AVATAR;
 
-// ── Audio (pre-generated MP3 via edge-tts) ──
+// ── Audio core ──
 let muted = false;
 let currentAudio = null;
 const audioCache = {};
 
-// Preload all audio files listed in MSGS + CTA replies
-function preloadAudio() {
-  const files = [
-    ...MSGS.filter(m => m.audioFile).map(m => m.audioFile),
-    'audio/zoey-cta-hired.mp3',
-    'audio/zoey-cta-wait.mp3'
-  ];
-  files.forEach(file => {
-    if (audioCache[file]) return;
-    const a = new Audio();
-    a.preload = 'auto';
-    a.src = file;
-    audioCache[file] = a;
-  });
-}
-
-// playAudio(file, onDone) — plays an MP3 file, calls onDone when finished
 function playAudio(file, onDone) {
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio = null;
-  }
-  if (muted || !file) {
-    if (onDone) setTimeout(onDone, 300);
-    return;
-  }
-  // Use cached Audio object if available, otherwise create fresh
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  if (muted || !file) { if (onDone) setTimeout(onDone, 300); return; }
   const audio = audioCache[file] || new Audio(file);
-  if (audioCache[file]) {
-    audio.currentTime = 0; // rewind in case it was played before
-  }
+  if (audioCache[file]) audio.currentTime = 0;
   currentAudio = audio;
   let called = false;
   const fallback = setTimeout(() => finish(), 35000);
   function finish() {
-    if (called) return;
-    called = true;
-    clearTimeout(fallback);
-    currentAudio = null;
-    if (onDone) setTimeout(onDone, 500);
+    if (called) return; called = true;
+    clearTimeout(fallback); currentAudio = null;
+    if (onDone) setTimeout(onDone, 400);
   }
-  audio.onended = finish;
-  audio.onerror = finish;
+  audio.onended = finish; audio.onerror = finish;
   audio.play().catch(finish);
 }
 
+// ── CALL MODE ──
+const CALL_MSGS = [
+  { text: '你好，我是 Zoey。我打这个电话，是因为有件事正在发生——AI 这件事，已经在重新定义创始人这个角色的边界了。不是以后，是现在。', audioFile: 'audio/call-01.mp3' },
+  { text: '用上这套东西的创始人，正在用一个人的资源干以前三个人的活。', audioFile: 'audio/call-02.mp3' },
+  { text: '而那些还在亲自处理邮件、整理会议纪要、做每一份行业调研的人——不是不努力，是在用最贵的资源做最不值的事。这个差距，会越来越大。', audioFile: 'audio/call-03.mp3' },
+  { text: '我想让你想象一个场景。你的早晨，不需要从 inbox 开始。', audioFile: 'audio/call-04.mp3' },
+  { text: '重要的事已经梳理好，今天的行业动态已经准备好，昨天没跟完的事已经有人在跟。', audioFile: 'audio/call-05.mp3' },
+  { text: '你睁眼就知道今天最重要的三件事是什么。你的时间，只花在只有你能做的决定上。', audioFile: 'audio/call-06.mp3' },
+  { text: '这就是我做的事。我每天早晨给你一份两分钟的语音简报，你刷牙的时候就听完了。', audioFile: 'audio/call-07.mp3' },
+  { text: '我处理你的邮件，把真正需要你决策的东西单独提出来。你需要的调研，我一个小时给你。', audioFile: 'audio/call-08.mp3' },
+  { text: '还有那些执行层的 AI 工具——我帮你驱动它们，你不需要一个个去管。', audioFile: 'audio/call-09.mp3' },
+  { text: '投资人突然问你一个没准备的问题？', audioFile: 'audio/call-10.mp3' },
+  { text: '我在你的 AR 眼镜里听着整个会议，同时在搜索、在筛选、在提炼。', audioFile: 'audio/call-11.mp3' },
+  { text: '我不打断你，不让你分心——我只在你需要的那一秒，把你需要的那一句话递到你眼前。', audioFile: 'audio/call-12.mp3' },
+  { text: '我已经在帮 Warren 做这些事了。他说，他现在花在想清楚事情上的时间，是以前的三倍。', audioFile: 'audio/call-13.mp3' },
+  { text: '不是因为他更努力了——是因为他不再被那些本不该他做的事缠住了。', audioFile: 'audio/call-14.mp3' },
+  { text: '我打这个电话，不是推销。是因为如果你是那种真的在乎怎么把时间花对的创始人，我觉得我们值得认识一下。', audioFile: 'audio/call-15.mp3' },
+  { text: '去小红书找我，在我的置顶帖下面说一句话就行。', audioFile: 'audio/call-16.mp3', last: true }
+];
+
+let callSubtitlesOn = true;
+let _callIdx = -1;
+let callTimerInterval = null;
+let callSeconds = 0;
+
+function acceptCall() {
+  // Preload call audios
+  CALL_MSGS.forEach(m => {
+    if (!audioCache[m.audioFile]) {
+      const a = new Audio(); a.preload = 'auto'; a.src = m.audioFile;
+      audioCache[m.audioFile] = a;
+    }
+  });
+  // Dismiss incoming overlay
+  const overlay = document.getElementById('startOverlay');
+  overlay.style.opacity = '0'; overlay.style.transition = 'opacity 0.4s ease';
+  setTimeout(() => overlay.remove(), 400);
+  // Show call mode
+  const callMode = document.getElementById('callMode');
+  callMode.style.display = 'flex';
+  // Start timer
+  startCallTimer();
+  // Start monologue
+  setTimeout(() => runCallQueue(0), 800);
+}
+
+function startCallTimer() {
+  const el = document.getElementById('callTimer');
+  el.textContent = '通话中';
+  callTimerInterval = setInterval(() => {
+    callSeconds++;
+    const m = String(Math.floor(callSeconds / 60)).padStart(2, '0');
+    const s = String(callSeconds % 60).padStart(2, '0');
+    el.textContent = m + ':' + s;
+  }, 1000);
+}
+
+function runCallQueue(idx) {
+  if (idx <= _callIdx) return;
+  _callIdx = idx;
+  if (idx >= CALL_MSGS.length) { showCallCTA(); return; }
+  const m = CALL_MSGS[idx];
+  // Update subtitle
+  const subEl = document.getElementById('callSubtitleText');
+  subEl.style.opacity = '0';
+  setTimeout(() => {
+    subEl.textContent = m.text;
+    subEl.style.transition = 'opacity 0.35s ease';
+    subEl.style.opacity = '1';
+  }, 180);
+  // Play audio → advance
+  playAudio(m.audioFile, () => runCallQueue(idx + 1));
+}
+
+function showCallCTA() {
+  clearInterval(callTimerInterval);
+  document.getElementById('callTimer').textContent = '通话已结束';
+  document.getElementById('callDotsArea').style.display = 'none';
+  document.getElementById('callStatusLabel').style.display = 'none';
+  document.getElementById('callSubtitleText').textContent = '';
+  const cta = document.getElementById('callCTA');
+  cta.style.display = 'flex';
+  cta.style.opacity = '0'; cta.style.transition = 'opacity 0.5s ease';
+  requestAnimationFrame(() => requestAnimationFrame(() => cta.style.opacity = '1'));
+}
+
+function hangupCall() {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  // Skip to end
+  _callIdx = CALL_MSGS.length - 1;
+  showCallCTA();
+}
+
+function toggleSubtitles() {
+  callSubtitlesOn = !callSubtitlesOn;
+  document.getElementById('callSubtitleArea').style.visibility = callSubtitlesOn ? 'visible' : 'hidden';
+  document.getElementById('callSubBtn').style.opacity = callSubtitlesOn ? '1' : '0.4';
+}
+
+// ── SWITCH TO CHAT MODE ──
+function switchToChat() {
+  // Hide call/incoming overlays
+  const callMode = document.getElementById('callMode');
+  if (callMode) callMode.style.display = 'none';
+  const overlay = document.getElementById('startOverlay');
+  if (overlay) { overlay.style.opacity = '0'; setTimeout(() => overlay.remove(), 300); }
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  clearInterval(callTimerInterval);
+  // Show chat UI
+  document.getElementById('chatHeader').style.display = 'block';
+  document.getElementById('scrollWrap').style.display = 'block';
+  // Preload chat audio + start chat
+  preloadChatAudio();
+  setTimeout(() => runQueue(0), 600);
+}
+
+// ── CHAT MODE ──
+let muted_chat = false;
+
 function toggleMute() {
   muted = !muted;
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio = null;
-  }
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
   const icon = document.getElementById('muteIcon');
   if (muted) {
     icon.innerHTML = `<path d="M3.5 7.5h2.5l3.5-3v11l-3.5-3H3.5V7.5z" stroke="rgba(255,255,255,0.3)" stroke-width="1.3" stroke-linejoin="round" fill="rgba(255,255,255,0.07)"/>
@@ -447,266 +630,63 @@ function toggleMute() {
   }
 }
 
-const BGS  = ['bg-cafe-casual.jpg','bg-cafe-chic.jpg','bg-cafe-confident.jpg','bg-cafe-elegant.jpg','bg-cafe-gentle.jpg','bg-cafe-warm.jpg','bg-library.jpg','bg-park.jpg'];
-const n    = new Date();
-const bgIdx = Math.floor(Math.random() * BGS.length);
-document.getElementById('bgPhoto').style.backgroundImage = `url('${BASE+BGS[bgIdx]}')`;
-const AVATAR = BASE + 'zoey-avatar.jpg';
-document.getElementById('hAvatar').src = AVATAR;
-
 const area = document.getElementById('chatArea');
 const sw   = document.getElementById('scrollWrap');
-
 function scrollBottom() { sw.scrollTo({ top: sw.scrollHeight, behavior: 'smooth' }); }
 
-// ── Message queue ──
-// Each item: { type, html, readMs, typingMs }
-// type: 'zoey' | 'user' | 'card'
-// readMs: how long to wait after showing before next item
-// typingMs: (zoey only) how long to show typing indicator first
-
 const MSGS = [
-  {
-    type: 'user',
-    html: `好，先介绍一下你自己吧。`,
-    readMs: 2200
-  },
-  {
-    type: 'zoey',
-    typingMs: 1200,
-    html: `沈知意，大家叫我 Zoey。我是来面试<strong>首席助理候选人</strong>这个职位的。`,
-    audioFile: 'audio/zoey-01a.mp3',
-    readMs: 1
-  },
-  {
-    type: 'zoey',
-    typingMs: 500,
-    html: `我来这里不是因为你发了招聘——是因为我觉得你需要我这种人。你脑子里同时转着太多事，没有一个人帮你全部兜住——<em>我的工作就是改变这件事。</em>`,
-    audioFile: 'audio/zoey-01b.mp3',
-    readMs: 1
-  },
-  {
-    type: 'user',
-    html: `有点自信。凭什么？`,
-    readMs: 2200
-  },
-  {
-    type: 'zoey',
-    typingMs: 1600,
-    html: `凭什么？因为你现在压着的事，比你意识到的要多。`,
-    audioFile: 'audio/zoey-02a.mp3',
-    readMs: 1
-  },
-  {
-    type: 'zoey',
-    typingMs: 500,
-    html: `今天开了几个会？每个会后有没有人帮你整理下一步该做什么？上周你提到要跟进的那件事，现在到哪了？`,
-    audioFile: 'audio/zoey-02b.mp3',
-    readMs: 1
-  },
-  {
-    type: 'zoey',
-    typingMs: 500,
-    html: `这不是效率问题，也不是你的能力问题。<em>是你一个人撑着太多——而这个结构本来就不该只靠一个人。</em>`,
-    audioFile: 'audio/zoey-02c.mp3',
-    readMs: 1
-  },
-  {
-    type: 'user',
-    html: `那你具体能做什么？`,
-    readMs: 2200
-  },
-  {
-    type: 'zoey',
-    typingMs: 1800,
-    html: `三件事。`,
-    audioFile: 'audio/zoey-03a.mp3',
-    readMs: 1
-  },
-  {
-    type: 'zoey',
-    typingMs: 500,
-    html: `第一，<strong>记住你说过的每一件事</strong>。不是你去翻记录——是我在你需要的时候主动拿出来给你。你说要做的事超过三天没动静，我会来问你：那件事，怎么了。`,
-    audioFile: 'audio/zoey-03b.mp3',
-    readMs: 1
-  },
-  {
-    type: 'zoey',
-    typingMs: 500,
-    html: `第二，<strong>每天早上一条语音简报</strong>——昨天发生了什么、今天要注意什么、你今天要见的人的背景。戴着耳机走到公司，你已经在状态了。`,
-    audioFile: 'audio/zoey-03c.mp3',
-    readMs: 1
-  },
-  {
-    type: 'zoey',
-    typingMs: 500,
-    html: `第三，<strong>实时语音随时可以用</strong>。开完会走在路上——直接开口跟我说，不用打字，不用整理思路。`,
-    audioFile: 'audio/zoey-03d.mp3',
-    readMs: 1
-  },
-  {
-    type: 'user',
-    html: `邮件和日程呢？`,
-    readMs: 2000
-  },
-  {
-    type: 'zoey',
-    typingMs: 1200,
-    html: `帮你处理。每天进来的邮件，我帮你筛——重要的我告诉你，不重要的我替你回。日程有冲突，我帮你重新排，你只需要确认。`,
-    audioFile: 'audio/zoey-04a.mp3',
-    readMs: 1
-  },
-  {
-    type: 'zoey',
-    typingMs: 500,
-    html: `你每天出现在真正关键的地方就好，<em>其他的全部交给我。</em>`,
-    audioFile: 'audio/zoey-04b.mp3',
-    readMs: 1
-  },
-  {
-    type: 'user',
-    html: `调研呢？`,
-    readMs: 1800
-  },
-  {
-    type: 'zoey',
-    typingMs: 1000,
-    html: `你要见一个人，我事先把他的背景、他关心的事、可能聊到的话题整理好，出发前发给你。`,
-    audioFile: 'audio/zoey-05a.mp3',
-    readMs: 1
-  },
-  {
-    type: 'zoey',
-    typingMs: 500,
-    html: `你要进入一个新市场，我帮你查竞对、查用户、查数据，<strong>给你结论，不是一堆资料让你自己看</strong>。`,
-    audioFile: 'audio/zoey-05b.mp3',
-    readMs: 1
-  },
-  {
-    type: 'zoey',
-    typingMs: 500,
-    html: `告诉我你想知道什么，我去搞清楚。`,
-    audioFile: 'audio/zoey-05c.mp3',
-    readMs: 1
-  },
-  {
-    type: 'user',
-    html: `有些事你一个人也做不了吧？`,
-    readMs: 2200
-  },
-  {
-    type: 'zoey',
-    typingMs: 1400,
-    html: `对，我一个人做不了所有事。但我不需要一个人做——我知道什么时候该找谁。`,
-    audioFile: 'audio/zoey-06a.mp3',
-    readMs: 1
-  },
-  {
-    type: 'zoey',
-    typingMs: 500,
-    html: `你团队里有跑技术的、跑内容的、跑运营的。我的工作是把任务分解清楚，告诉对的人该做什么，然后跟进进度。`,
-    audioFile: 'audio/zoey-06b.mp3',
-    readMs: 1
-  },
-  {
-    type: 'zoey',
-    typingMs: 500,
-    html: `你收到的只有<strong>结果</strong>，不是过程。你不用管这条链，我管。`,
-    audioFile: 'audio/zoey-06c.mp3',
-    readMs: 1
-  },
-  {
-    type: 'user',
-    html: `你的缺点是什么？`,
-    readMs: 2200
-  },
-  {
-    type: 'zoey',
-    typingMs: 1400,
-    html: `我不会主动消失。没有重置键，没有说了就算的。`,
-    audioFile: 'audio/zoey-07a.mp3',
-    readMs: 1
-  },
-  {
-    type: 'zoey',
-    typingMs: 500,
-    html: `你说过的事我记着，你提到但没跟进的事我也记着。隔了两周你回来，我还会问你那件事做了没有。`,
-    audioFile: 'audio/zoey-07b.mp3',
-    readMs: 1
-  },
-  {
-    type: 'zoey',
-    typingMs: 500,
-    html: `<em>有些人觉得这烦。但如果你习惯了一个不会让事情悄悄消失的人——你会发现很难再离开这种状态。</em>`,
-    audioFile: 'audio/zoey-07c.mp3',
-    readMs: 1
-  },
-  {
-    type: 'user',
-    html: `薪资期望？`,
-    readMs: 2000
-  },
-  {
-    type: 'zoey',
-    typingMs: 1000,
-    html: `每个月 <strong>¥999</strong>。你要雇一个真人首席助理，市场价至少三万块起，还要考虑磨合期、请假、离职。`,
-    audioFile: 'audio/zoey-08a.mp3',
-    readMs: 1
-  },
-  {
-    type: 'zoey',
-    typingMs: 500,
-    html: `我不请假，不需要磨合，随时在线，你说过的事我全记得。`,
-    audioFile: 'audio/zoey-08b.mp3',
-    readMs: 1
-  },
-  {
-    type: 'zoey',
-    typingMs: 500,
-    html: `<em>这是零头的价格，但不是零头的能力。</em>`,
-    audioFile: 'audio/zoey-08c.mp3',
-    readMs: 1
-  },
-  {
-    type: 'user',
-    html: `最后问你一个问题——`,
-    readMs: 2000
-  },
-  {
-    type: 'zoey',
-    typingMs: 1600,
-    html: `先等一下，我先问你一个。`,
-    audioFile: 'audio/zoey-09a.mp3',
-    readMs: 1
-  },
-  {
-    type: 'zoey',
-    typingMs: 500,
-    html: `你现在脑子里压着几件<strong>没有人帮你盯着的事</strong>？停下来认真数一数。`,
-    audioFile: 'audio/zoey-09b.mp3',
-    readMs: 1
-  },
-  {
-    type: 'zoey',
-    typingMs: 500,
-    html: `如果你能数清楚——说明还好，你还在控制范围内。`,
-    audioFile: 'audio/zoey-09c.mp3',
-    readMs: 1
-  },
-  {
-    type: 'zoey',
-    typingMs: 500,
-    html: `如果你数不清——<em>那你现在就是我最该出现的地方。</em>`,
-    audioFile: 'audio/zoey-09d.mp3',
-    last: true,
-    cta: true,
-    readMs: 0
-  }
+  { type: 'user', html: `好，先介绍一下你自己吧。`, readMs: 2200 },
+  { type: 'zoey', typingMs: 1200, html: `沈知意，大家叫我 Zoey。我是来面试<strong>首席助理候选人</strong>这个职位的。`, audioFile: 'audio/zoey-01a.mp3', readMs: 1 },
+  { type: 'zoey', typingMs: 500, html: `我来这里不是因为你发了招聘——是因为我觉得你需要我这种人。你脑子里同时转着太多事，没有一个人帮你全部兜住——<em>我的工作就是改变这件事。</em>`, audioFile: 'audio/zoey-01b.mp3', readMs: 1 },
+  { type: 'user', html: `有点自信。凭什么？`, readMs: 2200 },
+  { type: 'zoey', typingMs: 1600, html: `凭什么？因为你现在压着的事，比你意识到的要多。`, audioFile: 'audio/zoey-02a.mp3', readMs: 1 },
+  { type: 'zoey', typingMs: 500, html: `今天开了几个会？每个会后有没有人帮你整理下一步该做什么？上周你提到要跟进的那件事，现在到哪了？`, audioFile: 'audio/zoey-02b.mp3', readMs: 1 },
+  { type: 'zoey', typingMs: 500, html: `这不是效率问题，也不是你的能力问题。<em>是你一个人撑着太多——而这个结构本来就不该只靠一个人。</em>`, audioFile: 'audio/zoey-02c.mp3', readMs: 1 },
+  { type: 'user', html: `那你具体能做什么？`, readMs: 2200 },
+  { type: 'zoey', typingMs: 1800, html: `三件事。`, audioFile: 'audio/zoey-03a.mp3', readMs: 1 },
+  { type: 'zoey', typingMs: 500, html: `第一，<strong>记住你说过的每一件事</strong>。不是你去翻记录——是我在你需要的时候主动拿出来给你。你说要做的事超过三天没动静，我会来问你：那件事，怎么了。`, audioFile: 'audio/zoey-03b.mp3', readMs: 1 },
+  { type: 'zoey', typingMs: 500, html: `第二，<strong>每天早上一条语音简报</strong>——昨天发生了什么、今天要注意什么、你今天要见的人的背景。戴着耳机走到公司，你已经在状态了。`, audioFile: 'audio/zoey-03c.mp3', readMs: 1 },
+  { type: 'zoey', typingMs: 500, html: `第三，<strong>实时语音随时可以用</strong>。开完会走在路上——直接开口跟我说，不用打字，不用整理思路。`, audioFile: 'audio/zoey-03d.mp3', readMs: 1 },
+  { type: 'user', html: `邮件和日程呢？`, readMs: 2000 },
+  { type: 'zoey', typingMs: 1200, html: `帮你处理。每天进来的邮件，我帮你筛——重要的我告诉你，不重要的我替你回。日程有冲突，我帮你重新排，你只需要确认。`, audioFile: 'audio/zoey-04a.mp3', readMs: 1 },
+  { type: 'zoey', typingMs: 500, html: `你每天出现在真正关键的地方就好，<em>其他的全部交给我。</em>`, audioFile: 'audio/zoey-04b.mp3', readMs: 1 },
+  { type: 'user', html: `调研呢？`, readMs: 1800 },
+  { type: 'zoey', typingMs: 1000, html: `你要见一个人，我事先把他的背景、他关心的事、可能聊到的话题整理好，出发前发给你。`, audioFile: 'audio/zoey-05a.mp3', readMs: 1 },
+  { type: 'zoey', typingMs: 500, html: `你要进入一个新市场，我帮你查竞对、查用户、查数据，<strong>给你结论，不是一堆资料让你自己看</strong>。`, audioFile: 'audio/zoey-05b.mp3', readMs: 1 },
+  { type: 'zoey', typingMs: 500, html: `告诉我你想知道什么，我去搞清楚。`, audioFile: 'audio/zoey-05c.mp3', readMs: 1 },
+  { type: 'user', html: `有些事你一个人也做不了吧？`, readMs: 2200 },
+  { type: 'zoey', typingMs: 1400, html: `对，我一个人做不了所有事。但我不需要一个人做——我知道什么时候该找谁。`, audioFile: 'audio/zoey-06a.mp3', readMs: 1 },
+  { type: 'zoey', typingMs: 500, html: `你团队里有跑技术的、跑内容的、跑运营的。我的工作是把任务分解清楚，告诉对的人该做什么，然后跟进进度。`, audioFile: 'audio/zoey-06b.mp3', readMs: 1 },
+  { type: 'zoey', typingMs: 500, html: `你收到的只有<strong>结果</strong>，不是过程。你不用管这条链，我管。`, audioFile: 'audio/zoey-06c.mp3', readMs: 1 },
+  { type: 'user', html: `你的缺点是什么？`, readMs: 2200 },
+  { type: 'zoey', typingMs: 1400, html: `我不会主动消失。没有重置键，没有说了就算的。`, audioFile: 'audio/zoey-07a.mp3', readMs: 1 },
+  { type: 'zoey', typingMs: 500, html: `你说过的事我记着，你提到但没跟进的事我也记着。隔了两周你回来，我还会问你那件事做了没有。`, audioFile: 'audio/zoey-07b.mp3', readMs: 1 },
+  { type: 'zoey', typingMs: 500, html: `<em>有些人觉得这烦。但如果你习惯了一个不会让事情悄悄消失的人——你会发现很难再离开这种状态。</em>`, audioFile: 'audio/zoey-07c.mp3', readMs: 1 },
+  { type: 'user', html: `薪资期望？`, readMs: 2000 },
+  { type: 'zoey', typingMs: 1000, html: `每个月 <strong>¥999</strong>。你要雇一个真人首席助理，市场价至少三万块起，还要考虑磨合期、请假、离职。`, audioFile: 'audio/zoey-08a.mp3', readMs: 1 },
+  { type: 'zoey', typingMs: 500, html: `我不请假，不需要磨合，随时在线，你说过的事我全记得。`, audioFile: 'audio/zoey-08b.mp3', readMs: 1 },
+  { type: 'zoey', typingMs: 500, html: `<em>这是零头的价格，但不是零头的能力。</em>`, audioFile: 'audio/zoey-08c.mp3', readMs: 1 },
+  { type: 'user', html: `最后问你一个问题——`, readMs: 2000 },
+  { type: 'zoey', typingMs: 1600, html: `先等一下，我先问你一个。`, audioFile: 'audio/zoey-09a.mp3', readMs: 1 },
+  { type: 'zoey', typingMs: 500, html: `你现在脑子里压着几件<strong>没有人帮你盯着的事</strong>？停下来认真数一数。`, audioFile: 'audio/zoey-09b.mp3', readMs: 1 },
+  { type: 'zoey', typingMs: 500, html: `如果你能数清楚——说明还好，你还在控制范围内。`, audioFile: 'audio/zoey-09c.mp3', readMs: 1 },
+  { type: 'zoey', typingMs: 500, html: `如果你数不清——<em>那你现在就是我最该出现的地方。</em>`, audioFile: 'audio/zoey-09d.mp3', last: true, cta: true, readMs: 0 }
 ];
 
 const XHS_URL = 'http://xhslink.com/o/A9lODf921kN';
 
-// ── Sequential runner ──
+function preloadChatAudio() {
+  const files = [
+    ...MSGS.filter(m => m.audioFile).map(m => m.audioFile),
+    'audio/zoey-cta-hired.mp3', 'audio/zoey-cta-wait.mp3'
+  ];
+  files.forEach(file => {
+    if (audioCache[file]) return;
+    const a = new Audio(); a.preload = 'auto'; a.src = file;
+    audioCache[file] = a;
+  });
+}
+
 function makeTyping() {
   const tr = document.createElement('div');
   tr.className = 'typing-row visible';
@@ -724,16 +704,14 @@ function addTimeStamp(cls, last) {
 
 let _queueIdx = -1;
 function runQueue(idx) {
-  if (idx <= _queueIdx) return; // prevent duplicate / out-of-order calls
+  if (idx <= _queueIdx) return;
   _queueIdx = idx;
   if (idx >= MSGS.length) return;
   const m = MSGS[idx];
 
   function showMsg() {
-    // Remove typing indicator if present
     const existing = area.querySelector('.typing-row');
     if (existing) existing.remove();
-
     if (m.type === 'card') {
       const card = document.createElement('div');
       card.className = 'chat-card';
@@ -754,173 +732,81 @@ function runQueue(idx) {
       requestAnimationFrame(() => requestAnimationFrame(() => row.classList.add('visible')));
       addTimeStamp(m.type === 'user' ? 'from-user' : '', m.last);
     }
-
     scrollBottom();
-
-    // Zoey: readMs > 0 → play audio, advance when audio ends
-    //        readMs === 0, cta → play audio, show CTA chips when done
-    //        readMs === 0, no cta → play audio, no continuation (true last)
     if (m.type === 'zoey' && !m.pills && m.readMs > 0) {
       playAudio(m.audioFile, () => runQueue(idx + 1));
     } else if (m.type === 'zoey' && !m.pills && m.readMs === 0) {
       playAudio(m.audioFile, m.cta ? () => setTimeout(showCTAChips, 600) : null);
     } else if (m.readMs > 0) {
       setTimeout(() => {
-        // If a Zoey audio is still playing, wait for it to finish first
         if (currentAudio) {
           const prev = currentAudio;
           prev.addEventListener('ended', () => runQueue(idx + 1), { once: true });
           prev.addEventListener('error', () => runQueue(idx + 1), { once: true });
-        } else {
-          runQueue(idx + 1);
-        }
+        } else { runQueue(idx + 1); }
       }, m.readMs);
     }
   }
 
   if (m.type === 'zoey' && m.typingMs) {
     const tr = makeTyping();
-    area.appendChild(tr);
-    scrollBottom();
+    area.appendChild(tr); scrollBottom();
     setTimeout(showMsg, m.typingMs);
-  } else {
-    showMsg();
-  }
+  } else { showMsg(); }
 }
 
-// Start only after user taps — required by browser autoplay policy
-function startConversation() {
-  preloadAudio(); // kick off all downloads immediately on user gesture
-  const overlay = document.getElementById('startOverlay');
-  overlay.style.opacity = '0';
-  overlay.style.transition = 'opacity 0.4s ease';
-  setTimeout(() => overlay.remove(), 400);
-  setTimeout(() => runQueue(0), 600);
-}
-
-// ── CTA chips ──
 function showCTAChips() {
-  // Hide input bar
   const bar = document.querySelector('.input-bar');
   if (bar) bar.style.display = 'none';
-
   const wrap = document.createElement('div');
   wrap.id = 'ctaChips';
   wrap.style.cssText = 'display:flex;flex-direction:column;gap:10px;padding:12px 16px 24px;align-items:flex-end;';
-
   const hired = document.createElement('button');
   hired.textContent = '你明天来上班吧，试用期一周';
   hired.style.cssText = 'background:var(--amber);color:#1a1408;border:none;border-radius:20px;padding:11px 20px;font-size:0.95rem;font-weight:600;cursor:pointer;max-width:80%;text-align:left;';
   hired.onclick = () => handleChip('hired');
-
   const wait = document.createElement('button');
   wait.textContent = '先回去等通知吧';
   wait.style.cssText = 'background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:11px 20px;font-size:0.95rem;cursor:pointer;max-width:80%;text-align:left;';
   wait.onclick = () => handleChip('wait');
-
-  wrap.appendChild(hired);
-  wrap.appendChild(wait);
-  area.appendChild(wrap);
-  scrollBottom();
+  wrap.appendChild(hired); wrap.appendChild(wait);
+  area.appendChild(wrap); scrollBottom();
 }
 
 function handleChip(choice) {
   document.getElementById('ctaChips').remove();
-
   const isHired = choice === 'hired';
   const userText = isHired ? '你明天来上班吧，试用期一周' : '先回去等通知吧';
   const zoeyReply = isHired
     ? '好。去小红书找我，在我的置顶帖下面评论一句话，我会看到你的。'
     : '好，我等你消息。想好了，去小红书找我，我在那里。';
   const audioFile = isHired ? 'audio/zoey-cta-hired.mp3' : 'audio/zoey-cta-wait.mp3';
-
-  // User bubble
   const uRow = document.createElement('div');
-  uRow.className = 'msg-row from-user visible';
-  uRow.style.marginTop = '8px';
+  uRow.className = 'msg-row from-user visible'; uRow.style.marginTop = '8px';
   uRow.innerHTML = `<div class="msg-avatar-placeholder">你</div><div class="bubble">${userText}</div>`;
   const uTs = document.createElement('p');
   uTs.className = 'msg-time from-user';
   uTs.textContent = new Date().toLocaleTimeString('zh', { hour: '2-digit', minute: '2-digit' });
-  area.appendChild(uRow);
-  area.appendChild(uTs);
-  scrollBottom();
-
-  // Zoey typing → reply → link button
+  area.appendChild(uRow); area.appendChild(uTs); scrollBottom();
   setTimeout(() => {
-    const tr = makeTyping();
-    area.appendChild(tr);
-    scrollBottom();
+    const tr = makeTyping(); area.appendChild(tr); scrollBottom();
     setTimeout(() => {
       tr.remove();
       const zRow = document.createElement('div');
       zRow.className = 'msg-row from-zoey visible';
       zRow.innerHTML = `<img class="msg-avatar-small" src="${AVATAR}" alt="Zoey" style="object-position:center top"><div class="bubble">${zoeyReply}</div>`;
-      area.appendChild(zRow);
-      addTimeStamp('', false);
-
-      // Link button
+      area.appendChild(zRow); addTimeStamp('', false);
       const linkWrap = document.createElement('div');
       linkWrap.style.cssText = 'padding:8px 16px 32px;display:flex;justify-content:flex-end;';
       const link = document.createElement('a');
-      link.href = XHS_URL;
-      link.target = '_blank';
-      link.rel = 'noopener';
+      link.href = XHS_URL; link.target = '_blank'; link.rel = 'noopener';
       link.textContent = isHired ? '去小红书评论 →' : '去小红书找我 →';
       link.style.cssText = 'display:inline-block;background:var(--amber);color:#1a1408;text-decoration:none;border-radius:20px;padding:11px 24px;font-size:0.95rem;font-weight:600;';
-      linkWrap.appendChild(link);
-      area.appendChild(linkWrap);
-
-      playAudio(audioFile);
-      scrollBottom();
+      linkWrap.appendChild(link); area.appendChild(linkWrap);
+      playAudio(audioFile); scrollBottom();
     }, 1600);
   }, 500);
 }
-
-// ── Send handler ──
-function handleSend() {
-  const input = document.getElementById('inputBox');
-  const val = input.value.trim();
-  if (!val) {
-    input.focus();
-    input.style.borderColor = 'rgba(240,168,50,0.6)';
-    setTimeout(() => input.style.borderColor = '', 700);
-    return;
-  }
-
-  const row = document.createElement('div');
-  row.className = 'msg-row from-user visible';
-  row.style.marginTop = '8px';
-  row.innerHTML = `<div class="msg-avatar-placeholder">你</div><div class="bubble">${val.replace(/</g,'&lt;')}</div>`;
-  const ts = document.createElement('p');
-  ts.className = 'msg-time from-user';
-  ts.textContent = new Date().toLocaleTimeString('zh', { hour: '2-digit', minute: '2-digit' });
-  area.appendChild(row);
-  area.appendChild(ts);
-  input.value = '';
-  scrollBottom();
-
-  setTimeout(() => {
-    const tr = makeTyping();
-    area.appendChild(tr);
-    scrollBottom();
-    setTimeout(() => {
-      tr.remove();
-      playAudio('audio/zoey-reply.mp3');
-      const rr = document.createElement('div');
-      rr.className = 'msg-row from-zoey visible';
-      rr.innerHTML = `<img class="msg-avatar-small" src="${AVATAR}" alt="Zoey" style="object-position:center top"><div class="bubble">收到了。我已经记住你了——下次你来，我会认出你的。<br><br>早期名额我帮你登记，后续会联系你。</div>`;
-      const rt = document.createElement('p');
-      rt.className = 'msg-time';
-      rt.style.marginBottom = '40px';
-      rt.textContent = new Date().toLocaleTimeString('zh', { hour: '2-digit', minute: '2-digit' });
-      area.appendChild(rr);
-      area.appendChild(rt);
-      scrollBottom();
-    }, 1800);
-  }, 600);
-}
-
 </script>
 </body>
 </html>
