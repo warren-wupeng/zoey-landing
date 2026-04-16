@@ -608,8 +608,15 @@ function switchToChat() {
   if (callMode) callMode.style.display = 'none';
   const overlay = document.getElementById('startOverlay');
   if (overlay) { overlay.style.opacity = '0'; setTimeout(() => overlay.remove(), 300); }
+  const postOverlay = document.getElementById('postCallOverlay');
+  if (postOverlay) { postOverlay.style.opacity = '0'; setTimeout(() => postOverlay.remove(), 300); }
   if (currentAudio) { currentAudio.pause(); currentAudio = null; }
   clearInterval(callTimerInterval);
+  // Reset chat queue so interview starts from beginning
+  _queueIdx = -1;
+  // Clear any previously rendered chat messages
+  const feed = document.getElementById('chatFeed');
+  if (feed) feed.innerHTML = '';
   // Show chat UI
   document.getElementById('chatHeader').style.display = 'block';
   document.getElementById('scrollWrap').style.display = 'block';
